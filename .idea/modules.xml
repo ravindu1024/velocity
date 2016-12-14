@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/velocity/velocity.iml" filepath="$PROJECT_DIR$/velocity/velocity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/velocity-android.iml" filepath="$PROJECT_DIR$/velocity-android.iml" />
+    </modules>
+  </component>
+</project>
