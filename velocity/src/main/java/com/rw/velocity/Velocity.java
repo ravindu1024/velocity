@@ -4,10 +4,6 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.rw.velocity.builder.DownloadRequestBuilder;
-import com.rw.velocity.builder.RequestBuilder;
-import com.rw.velocity.builder.UploadRequestBuilder;
-
 import java.util.HashMap;
 
 /**
@@ -19,6 +15,12 @@ import java.util.HashMap;
 @SuppressWarnings("WeakerAccess")
 public class Velocity
 {
+
+    public enum DownloadFileType
+    {
+        Automatic, Base64toPdf, Base64toJpg
+    }
+
     public static class Data
     {
         @NonNull public final String body;
@@ -26,10 +28,11 @@ public class Velocity
         @Nullable public final Bitmap image;
         @Nullable public final Object userData;
         public final int status;
+        public final int requestId;
 
-
-        Data(@NonNull String body, int status, @NonNull HashMap<String, String> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
+        Data(int requestId, @NonNull String body, int status, @NonNull HashMap<String, String> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
         {
+            this.requestId = requestId;
             this.body = body;
             this.status = status;
             this.responseHeaders = responseHeaders;
@@ -41,10 +44,16 @@ public class Velocity
 
     public interface DataCallback
     {
-        void onVelocitySuccess();
-        void onVelocityFailed();
+        void onVelocitySuccess(Data response);
+        void onVelocityFailed(Data error);
     }
 
+
+
+    private Velocity()
+    {
+        //blocked constructor
+    }
 
     /**
      * IMPORTANT: Please initialize the background thread(s) before making any requests
@@ -54,7 +63,14 @@ public class Velocity
      */
     public static void initialize(int numThreads)
     {
-
+        try
+        {
+            ThreadPool.initialize(numThreads);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
@@ -77,9 +93,9 @@ public class Velocity
      * @param url request address
      * @return request builder
      */
-    public static DownloadRequestBuilder download(String url)
+    public static RequestBuilder download(String url)
     {
-        return new DownloadRequestBuilder();
+        return new RequestBuilder();
     }
 
     /**
@@ -87,9 +103,9 @@ public class Velocity
      * @param url request address
      * @return request builder
      */
-    public static UploadRequestBuilder upload(String url)
+    public static RequestBuilder upload(String url)
     {
-        return new UploadRequestBuilder();
+        return new RequestBuilder();
     }
 
 }
