@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * velocity-android
@@ -24,13 +26,13 @@ public class Velocity
     public static class Data
     {
         @NonNull public final String body;
-        @NonNull public final HashMap<String, String> responseHeaders;
+        @NonNull public final Map<String, List<String>> responseHeaders;
         @Nullable public final Bitmap image;
         @Nullable public final Object userData;
         public final int status;
         public final int requestId;
 
-        Data(int requestId, @NonNull String body, int status, @NonNull HashMap<String, String> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
+        Data(int requestId, @NonNull String body, int status, @NonNull Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
         {
             this.requestId = requestId;
             this.body = body;
@@ -39,6 +41,7 @@ public class Velocity
             this.image = image;
             this.userData = userData;
         }
+
     }
 
 
@@ -85,7 +88,7 @@ public class Velocity
      */
     public static RequestBuilder load(String url)
     {
-        return new RequestBuilder();
+        return new RequestBuilder(url);
     }
 
     /**
@@ -95,7 +98,7 @@ public class Velocity
      */
     public static RequestBuilder download(String url)
     {
-        return new RequestBuilder();
+        return new RequestBuilder(url);
     }
 
     /**
@@ -105,7 +108,24 @@ public class Velocity
      */
     public static RequestBuilder upload(String url)
     {
-        return new RequestBuilder();
+        return new RequestBuilder(url);
     }
+
+
+    public static class Settings
+    {
+        static int TIMEOUT = 5000;
+
+        /**
+         * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
+         * A timeout of zero is interpreted as an infinite timeout.
+         * @param timeout
+         */
+        public static void setTimeout(int timeout)
+        {
+            TIMEOUT = timeout;
+        }
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package com.rw.velocityapp;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +16,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Velocity.initialize(3);
+        Velocity.Settings.setTimeout(6000);
 
         Velocity.load("ff").withData(null);
 

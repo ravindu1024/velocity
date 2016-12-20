@@ -11,6 +11,7 @@ import java.util.HashMap;
  * Created by ravindu on 13/12/16.
  */
 
+@SuppressWarnings("WeakerAccess")
 public class RequestBuilder
 {
     HashMap<String, String> headers = new HashMap<>();
@@ -24,10 +25,17 @@ public class RequestBuilder
     String uploadServerFileName = "";
     int requestId = 0;
     Velocity.DataCallback callback;
+    final String url;
 
-    RequestBuilder()
+    private RequestBuilder()
     {
+        //will not be called from outside
+        this.url = null;
+    }
 
+    public RequestBuilder(String url)
+    {
+        this.url = url;
     }
 
     /**
@@ -47,7 +55,7 @@ public class RequestBuilder
      * @param value request header value
      * @return request builder
      */
-    public RequestBuilder addHeader(String key, String value)
+    public RequestBuilder withHeader(String key, String value)
     {
         this.headers.put(key, value);
         return this;
@@ -97,7 +105,7 @@ public class RequestBuilder
      * @param value param value
      * @return request Builder
      */
-    public RequestBuilder addParam(String key, String value)
+    public RequestBuilder withParam(String key, String value)
     {
         this.params.put(key, value);
         return this;
@@ -107,7 +115,7 @@ public class RequestBuilder
      * Set the http request method as GET
      * @return request builder
      */
-    public RequestBuilder withMethodGet()
+    public RequestBuilder withRequestMethodGet()
     {
         this.requestMethod = "GET";
         return this;
@@ -117,7 +125,7 @@ public class RequestBuilder
      * Set the http request method as POST
      * @return request builder
      */
-    public RequestBuilder withMethodPost()
+    public RequestBuilder withRequestMethodPost()
     {
         this.requestMethod = "POST";
         return this;
@@ -127,7 +135,7 @@ public class RequestBuilder
      * Set the http request method as PUT
      * @return request builder
      */
-    public RequestBuilder withMethodPut()
+    public RequestBuilder withRequestMethodPut()
     {
         this.requestMethod = "PUT";
         return this;
@@ -137,9 +145,15 @@ public class RequestBuilder
      * Set the http request method as DELETE
      * @return request builder
      */
-    public RequestBuilder withMethodDelete()
+    public RequestBuilder withRequestMethodDelete()
     {
         this.requestMethod = "DELETE";
+        return this;
+    }
+
+    public RequestBuilder withRequestMethod(String method)
+    {
+        this.requestMethod = method;
         return this;
     }
 
@@ -186,6 +200,8 @@ public class RequestBuilder
     public void connect(Velocity.DataCallback callback)
     {
         this.callback = callback;
+
+        ThreadPool.getThreadPool().postRequest(new Request(this));
     }
 
     /**
@@ -198,5 +214,7 @@ public class RequestBuilder
     {
         this.requestId = requestId;
         this.callback = callback;
+
+        ThreadPool.getThreadPool().postRequest(new Request(this));
     }
 }

@@ -69,11 +69,12 @@ class ThreadPool
                     mInstance.mHandlers.add(new Handler(l));
                 }
             }
+            NetLog.d("initialized threadpool with size : " + num);
         }
     }
 
 
-    void postRequest(final IRequest request)
+    void postRequest(final Request request)
     {
         Runnable r = new Runnable()
         {
