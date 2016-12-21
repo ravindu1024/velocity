@@ -22,8 +22,10 @@ class DownloadRequest extends Request
     }
 
     @Override
-    protected void readResponse()
+    protected boolean readResponse()
     {
+        boolean ret = false;
+
         NetLog.d("read response in download request");
         try
         {
@@ -60,16 +62,19 @@ class DownloadRequest extends Request
                 inputStream.close();
 
                 mResponse.append(mConnection.getContentType());
-                mSuccess = true;
+                ret = true;
             }
             else
-                mSuccess = false;
+                ret = false;
 
         }
         catch (IOException ioe)
         {
             mResponse = new StringBuilder(ioe.getMessage());
-            mSuccess = false;
+            ret = false;
         }
+
+
+        return ret;
     }
 }

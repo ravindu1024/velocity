@@ -32,9 +32,9 @@ class Request
 
     HttpURLConnection mConnection = null;
     StringBuilder mResponse = new StringBuilder();
-    Bitmap mResponseImage = null;
+    private Bitmap mResponseImage = null;
     int mResponseCode = 0;
-    boolean mSuccess = false;
+
 
     Request(RequestBuilder builder)
     {
@@ -49,18 +49,18 @@ class Request
      */
     void execute()
     {
-        initializeConnection();
+        boolean success = initializeConnection();
         NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
-        if(mSuccess)
+        if(success)
         {
-            readResponse();
+            success = readResponse();
 
-            if(!mSuccess)
+            if(!success)
                 readError();
         }
 
-        returnResponse();
+        returnResponse(success);
     }
 
     private void setupRequestHeaders()
@@ -126,8 +126,10 @@ class Request
         return params.toString();
     }
 
-    private void initializeConnection()
+    private boolean initializeConnection()
     {
+        boolean ret = false;
+
         try
         {
             URL url = new URL(mBuilder.url);
@@ -149,18 +151,21 @@ class Request
 
             mResponseCode = mConnection.getResponseCode();
 
-            mSuccess = true;
+            ret = true;
         }
         catch (IOException ioe)
         {
-            mSuccess = false;
+            ret = false;
             mResponse = new StringBuilder(ioe.getMessage());
         }
 
+        return  ret;
     }
 
-    protected void readResponse()
+    protected boolean readResponse()
     {
+        boolean ret = false;
+
         try
         {
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
@@ -183,16 +188,18 @@ class Request
                     }
                 }
 
-                mSuccess = true;
+                ret = true;
             }
             else
-                mSuccess = false;
+                ret = false;
         }
         catch (IOException e)
         {
-            mSuccess = false;
+            ret = false;
             mResponse = new StringBuilder(e.getMessage());
         }
+
+        return ret;
     }
 
     private void readError()
@@ -213,10 +220,9 @@ class Request
             mResponse.append(e.getMessage());
         }
 
-        mSuccess = false;
     }
 
-    private void returnResponse()
+    private void returnResponse(final boolean success)
     {
         final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
                                                 mResponse.toString(),
@@ -232,7 +238,7 @@ class Request
             {
                 if(mBuilder.callback != null)
                 {
-                    if (mSuccess)
+                    if (success)
                         mBuilder.callback.onVelocitySuccess(reply);
                     else
                         mBuilder.callback.onVelocityFailed(reply);
