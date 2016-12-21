@@ -19,12 +19,19 @@ public class RequestBuilder
     String requestMethod = "GET";
     Object userData = null;
     Uri uploadFile;
-    Uri downloadFile;
+    String downloadFile;
     Velocity.DownloadType downloadType;
     String uploadServerFileName = "";
     int requestId = 0;
     Velocity.ResponseListener callback;
     final String url;
+
+    private RequestType requestType = RequestType.Text;
+
+    enum RequestType
+    {
+        Text, Download, Upload
+    }
 
     private RequestBuilder()
     {
@@ -32,9 +39,10 @@ public class RequestBuilder
         this.url = null;
     }
 
-    public RequestBuilder(String url)
+    public RequestBuilder(String url, RequestType type)
     {
         this.url = url;
+        this.requestType = type;
     }
 
     /**
@@ -167,7 +175,7 @@ public class RequestBuilder
         return this;
     }
 
-    public RequestBuilder setDownloadFile(Uri downloadFile)
+    public RequestBuilder setDownloadFile(String downloadFile)
     {
         this.downloadFile = downloadFile;
         return this;
@@ -200,7 +208,7 @@ public class RequestBuilder
     {
         this.callback = callback;
 
-        ThreadPool.getThreadPool().postRequest(new Request(this));
+        ThreadPool.getThreadPool().postRequest(resolveRequest());
     }
 
     /**
@@ -214,6 +222,19 @@ public class RequestBuilder
         this.requestId = requestId;
         this.callback = callback;
 
-        ThreadPool.getThreadPool().postRequest(new Request(this));
+        ThreadPool.getThreadPool().postRequest(resolveRequest());
+    }
+
+    private Request resolveRequest()
+    {
+        Request request;
+        if(requestType == RequestType.Download)
+            request = new DownloadRequest(this);
+        else if(requestType == RequestType.Upload)
+            request = new UploadRequest(this);
+        else
+            request = new Request(this);
+
+        return request;
     }
 }

@@ -28,13 +28,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 class Request
 {
-    private final RequestBuilder mBuilder;
+    final RequestBuilder mBuilder;
 
-    private HttpURLConnection mConnection = null;
-    private StringBuilder mResponse = new StringBuilder();
-    private Bitmap mResponseImage = null;
-    private int mResponseCode = 0;
-    private boolean mSuccess = false;
+    HttpURLConnection mConnection = null;
+    StringBuilder mResponse = new StringBuilder();
+    Bitmap mResponseImage = null;
+    int mResponseCode = 0;
+    boolean mSuccess = false;
 
     Request(RequestBuilder builder)
     {
@@ -49,11 +49,12 @@ class Request
      */
     void execute()
     {
-        NetLog.d("execute rerquest: " + mBuilder.url);
-
         initializeConnection();
 
+        NetLog.d("after init: " + mSuccess);
         if(mSuccess) readResponse();
+        NetLog.d("after readresponse: " + mSuccess);
+        if(!mSuccess) readError();
 
         NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
@@ -156,7 +157,7 @@ class Request
 
     }
 
-    private void readResponse()
+    protected void readResponse()
     {
         try
         {
@@ -183,24 +184,34 @@ class Request
                 mSuccess = true;
             }
             else
-            {
-                InputStream in = new BufferedInputStream(mConnection.getErrorStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                String line;
-                while ((line = reader.readLine()) != null)
-                {
-                    mResponse.append(line);
-                }
-
                 mSuccess = false;
-            }
         }
         catch (IOException e)
         {
             mSuccess = false;
             mResponse = new StringBuilder(e.getMessage());
         }
+    }
+
+    private void readError()
+    {
+        InputStream in = new BufferedInputStream(mConnection.getErrorStream());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        try
+        {
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                mResponse.append(line);
+            }
+        }
+        catch (IOException e)
+        {
+            mResponse = new StringBuilder(e.getMessage());
+        }
+
+        mSuccess = false;
     }
 
     private void returnResponse()

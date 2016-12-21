@@ -54,7 +54,7 @@ public class Velocity
      */
     public static RequestBuilder load(String url)
     {
-        return new RequestBuilder(url);
+        return new RequestBuilder(url, RequestBuilder.RequestType.Text);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Velocity
      */
     public static RequestBuilder download(String url)
     {
-        return new RequestBuilder(url);
+        return new RequestBuilder(url, RequestBuilder.RequestType.Download);
     }
 
     /**
@@ -74,7 +74,7 @@ public class Velocity
      */
     public static RequestBuilder upload(String url)
     {
-        return new RequestBuilder(url);
+        return new RequestBuilder(url, RequestBuilder.RequestType.Upload);
     }
 
 
@@ -117,7 +117,7 @@ public class Velocity
     public static class Settings
     {
         int TIMEOUT = 5000;
-        int READ_TIMEOUT = 0;
+        int READ_TIMEOUT = 30000;
 
         /**
          * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
