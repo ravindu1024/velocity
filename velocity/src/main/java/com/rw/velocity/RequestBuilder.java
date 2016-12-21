@@ -25,6 +25,7 @@ public class RequestBuilder
     int requestId = 0;
     Velocity.ResponseListener callback;
     final String url;
+    Velocity.ProgressListener progressListener;
 
     private RequestType requestType = RequestType.Text;
 
@@ -196,6 +197,18 @@ public class RequestBuilder
     public RequestBuilder setUploadDestinationFileName(String name)
     {
         this.uploadServerFileName = name;
+        return this;
+    }
+
+    /**
+     * Receive progress notifications on a file download or upload.
+     * This parameter will be ignored for text or image requests
+     * @param listener file progress listener
+     * @return request builder
+     */
+    public RequestBuilder withProgressListener(Velocity.ProgressListener listener)
+    {
+        this.progressListener = listener;
         return this;
     }
 

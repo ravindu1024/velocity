@@ -113,6 +113,11 @@ public class Velocity
         void onVelocityFailed(Response error);
     }
 
+    public interface ProgressListener
+    {
+        void onFileProgress(int percentage);
+    }
+
 
     public static class Settings
     {

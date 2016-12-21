@@ -1,5 +1,6 @@
 package com.rw.velocityapp;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity
 {
     private TextView textView;
     private ImageView imageView;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -34,26 +36,42 @@ public class MainActivity extends AppCompatActivity
         String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
         String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setMessage("downloading file...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
 
 
-
-        downloadRequest(pdf);
+        downloadRequest(file);
 
     }
 
     private void downloadRequest(String url)
     {
-        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "pdfsample.pdf";
+        progressDialog.show();
+        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample.bin";
 
         Log.d("IMG", "target filename: " + filepath);
 
-        Velocity.download(url).setDownloadFile(filepath).connect(new Velocity.ResponseListener()
+        Velocity.download(url).setDownloadFile(filepath)
+                .withProgressListener(new Velocity.ProgressListener()
+                {
+                    @Override
+                    public void onFileProgress(int percentage)
+                    {
+                        Log.d("IMG", "progress: " + percentage);
+                        progressDialog.setProgress(percentage);
+                    }
+                })
+                .connect(new Velocity.ResponseListener()
         {
             @Override
             public void onVelocitySuccess(Velocity.Response response)
             {
                 Log.d("IMG", "response: "+response.body);
                 textView.setText(response.body);
+                progressDialog.dismiss();
             }
 
             @Override
@@ -61,6 +79,7 @@ public class MainActivity extends AppCompatActivity
             {
                 Log.d("IMG", "error: "+error.body);
                 textView.setText(error.status + ": "+ error.body);
+                progressDialog.dismiss();
             }
         });
     }
