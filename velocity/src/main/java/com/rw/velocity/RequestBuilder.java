@@ -2,7 +2,6 @@ package com.rw.velocity;
 
 import android.net.Uri;
 
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -21,10 +20,10 @@ public class RequestBuilder
     Object userData = null;
     Uri uploadFile;
     Uri downloadFile;
-    Velocity.DownloadFileType downloadType;
+    Velocity.DownloadType downloadType;
     String uploadServerFileName = "";
     int requestId = 0;
-    Velocity.DataCallback callback;
+    Velocity.ResponseListener callback;
     final String url;
 
     private RequestBuilder()
@@ -174,7 +173,7 @@ public class RequestBuilder
         return this;
     }
 
-    public RequestBuilder setDownloadFileType(Velocity.DownloadFileType type)
+    public RequestBuilder setDownloadFileType(Velocity.DownloadType type)
     {
         this.downloadType = type;
         return this;
@@ -194,10 +193,10 @@ public class RequestBuilder
 
     /**
      * Make a network request to recieve data in the callback.
-     * See also {@link RequestBuilder#connect(int, Velocity.DataCallback)}
+     * See also {@link RequestBuilder#connect(int, Velocity.ResponseListener)}
      * @param callback data callback
      */
-    public void connect(Velocity.DataCallback callback)
+    public void connect(Velocity.ResponseListener callback)
     {
         this.callback = callback;
 
@@ -210,7 +209,7 @@ public class RequestBuilder
      * @param requestId unique request id
      * @param callback data callback
      */
-    public void connect(int requestId, Velocity.DataCallback callback)
+    public void connect(int requestId, Velocity.ResponseListener callback)
     {
         this.requestId = requestId;
         this.callback = callback;

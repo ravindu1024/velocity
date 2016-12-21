@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,40 +16,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class Velocity
 {
-
-    public enum DownloadFileType
-    {
-        Automatic, Base64toPdf, Base64toJpg
-    }
-
-    public static class Data
-    {
-        @NonNull public final String body;
-        @NonNull public final Map<String, List<String>> responseHeaders;
-        @Nullable public final Bitmap image;
-        @Nullable public final Object userData;
-        public final int status;
-        public final int requestId;
-
-        Data(int requestId, @NonNull String body, int status, @NonNull Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
-        {
-            this.requestId = requestId;
-            this.body = body;
-            this.status = status;
-            this.responseHeaders = responseHeaders;
-            this.image = image;
-            this.userData = userData;
-        }
-
-    }
-
-
-    public interface DataCallback
-    {
-        void onVelocitySuccess(Data response);
-        void onVelocityFailed(Data error);
-    }
-
+    static Settings mSettings = new Settings();
 
 
     private Velocity()
@@ -112,19 +78,72 @@ public class Velocity
     }
 
 
+
+
+    public enum DownloadType
+    {
+        Automatic, Base64toPdf, Base64toJpg
+    }
+
+    public static class Response
+    {
+        @NonNull public final String body;
+        @NonNull public final Map<String, List<String>> responseHeaders;
+        @Nullable public final Bitmap image;
+        @Nullable public final Object userData;
+        public final int status;
+        public final int requestId;
+
+        Response(int requestId, @NonNull String body, int status, @NonNull Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
+        {
+            this.requestId = requestId;
+            this.body = body;
+            this.status = status;
+            this.responseHeaders = responseHeaders;
+            this.image = image;
+            this.userData = userData;
+        }
+
+    }
+
+
+    public interface ResponseListener
+    {
+        void onVelocitySuccess(Response response);
+        void onVelocityFailed(Response error);
+    }
+
+
     public static class Settings
     {
-        static int TIMEOUT = 5000;
+        int TIMEOUT = 5000;
+        int READ_TIMEOUT = 0;
 
         /**
          * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
          * A timeout of zero is interpreted as an infinite timeout.
-         * @param timeout
+         * @param timeout connection timeout in milliseconds
          */
-        public static void setTimeout(int timeout)
+        public void setTimeout(int timeout)
         {
             TIMEOUT = timeout;
         }
+
+        /**
+         * Sets the read timeout to a specified timeout, in milliseconds. A non-zero value specifies the timeout when
+         * reading from Input stream once a connection is established to a resource.
+         * A timeout of zero is interpreted as an infinite timeout.
+         * @param readTimeout read timeout in milliseconds
+         */
+        public void setReadTimeout(int readTimeout)
+        {
+            READ_TIMEOUT = readTimeout;
+        }
+    }
+
+    public static Settings getSettings()
+    {
+        return mSettings;
     }
 
 

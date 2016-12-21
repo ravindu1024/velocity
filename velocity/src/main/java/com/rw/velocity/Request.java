@@ -1,6 +1,9 @@
 package com.rw.velocity;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,6 +32,7 @@ class Request
 
     private HttpURLConnection mConnection = null;
     private StringBuilder mResponse = new StringBuilder();
+    private Bitmap mResponseImage = null;
     private int mResponseCode = 0;
     private boolean mSuccess = false;
 
@@ -131,7 +135,8 @@ class Request
                 mConnection = (HttpURLConnection) url.openConnection();
 
             mConnection.setRequestMethod(mBuilder.requestMethod);
-            mConnection.setConnectTimeout(Velocity.Settings.TIMEOUT);
+            mConnection.setConnectTimeout(Velocity.mSettings.TIMEOUT);
+            mConnection.setReadTimeout(Velocity.mSettings.READ_TIMEOUT);
 
             setupRequestHeaders();
 
@@ -146,7 +151,7 @@ class Request
         catch (IOException ioe)
         {
             mSuccess = false;
-            mResponse = new StringBuilder(ioe.toString());
+            mResponse = new StringBuilder(ioe.getMessage());
         }
 
     }
@@ -157,13 +162,22 @@ class Request
         {
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
             {
-                InputStream in = new BufferedInputStream(mConnection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-                String line;
-                while ((line = reader.readLine()) != null)
+                if(mConnection.getContentType().startsWith("image"))
                 {
-                    mResponse.append(line);
+                    mResponseImage = BitmapFactory.decodeStream(mConnection.getInputStream());
+                    mResponse.append(mConnection.getContentType());
+                }
+                else
+                {
+                    InputStream in = new BufferedInputStream(mConnection.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                    String line;
+                    while ((line = reader.readLine()) != null)
+                    {
+                        mResponse.append(line);
+                    }
                 }
 
                 mSuccess = true;
@@ -185,17 +199,17 @@ class Request
         catch (IOException e)
         {
             mSuccess = false;
-            mResponse = new StringBuilder(e.toString());
+            mResponse = new StringBuilder(e.getMessage());
         }
     }
 
     private void returnResponse()
     {
-        final Velocity.Data reply = new Velocity.Data(mBuilder.requestId,
+        final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
                                                 mResponse.toString(),
                                                 mResponseCode,
                                                 mConnection.getHeaderFields(),
-                                                null,
+                                                mResponseImage,
                                                 mBuilder.userData);
 
         Runnable r = new Runnable()
