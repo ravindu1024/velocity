@@ -50,13 +50,15 @@ class Request
     void execute()
     {
         initializeConnection();
-
-        NetLog.d("after init: " + mSuccess);
-        if(mSuccess) readResponse();
-        NetLog.d("after readresponse: " + mSuccess);
-        if(!mSuccess) readError();
-
         NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
+
+        if(mSuccess)
+        {
+            readResponse();
+
+            if(!mSuccess)
+                readError();
+        }
 
         returnResponse();
     }
@@ -208,7 +210,7 @@ class Request
         }
         catch (IOException e)
         {
-            mResponse = new StringBuilder(e.getMessage());
+            mResponse.append(e.getMessage());
         }
 
         mSuccess = false;

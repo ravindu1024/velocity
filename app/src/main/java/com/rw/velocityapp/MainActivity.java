@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.rw.velocity.Velocity;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity
 {
     private TextView textView;
@@ -50,8 +52,10 @@ public class MainActivity extends AppCompatActivity
     private void downloadRequest(String url)
     {
         progressDialog.show();
-        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample.bin";
+        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
 
+        File f = new File(filepath);
+        Log.d("IMG", "permissions: read: " + f.canRead()+", write: "+f.canWrite());
         Log.d("IMG", "target filename: " + filepath);
 
         Velocity.download(url).setDownloadFile(filepath)
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onFileProgress(int percentage)
                     {
-                        Log.d("IMG", "progress: " + percentage);
+                        //Log.d("IMG", "progress: " + percentage);
                         progressDialog.setProgress(percentage);
                     }
                 })

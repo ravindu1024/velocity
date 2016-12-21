@@ -1,5 +1,6 @@
 package com.rw.velocity;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +46,7 @@ class DownloadRequest extends Request
 
                     if(mBuilder.progressListener != null)
                     {
-                        int prog = totalRead*100/contentLen;
+                        int prog = totalRead * 100 / contentLen;
                         if(prog > mPrevProgress)
                         {
                             mPrevProgress = prog;
