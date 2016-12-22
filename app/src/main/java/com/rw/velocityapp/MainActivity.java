@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onFileProgress(int percentage)
                     {
-                        //Log.d("IMG", "progress: " + percentage);
+
                         progressDialog.setProgress(percentage);
                     }
                 })

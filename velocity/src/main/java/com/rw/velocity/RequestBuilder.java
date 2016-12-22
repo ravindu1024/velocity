@@ -47,6 +47,7 @@ public class RequestBuilder
 
     /**
      * Add HTTP request headers as a HashMap<String, String>
+     *
      * @param headers request headers
      * @return request builder
      */
@@ -58,7 +59,8 @@ public class RequestBuilder
 
     /**
      * Add a single request header
-     * @param key request header key
+     *
+     * @param key   request header key
      * @param value request header value
      * @return request builder
      */
@@ -70,6 +72,7 @@ public class RequestBuilder
 
     /**
      * Add HTTP form data as a Hashmap<String, String>
+     *
      * @param params form data
      * @return request builder
      */
@@ -82,6 +85,7 @@ public class RequestBuilder
     /**
      * Add HTTP params as a String (raw ot JSON string). "Content type" will be set to
      * "application/json" by default when calling this method
+     *
      * @param params raw parameter String
      * @return request builder
      */
@@ -95,7 +99,8 @@ public class RequestBuilder
     /**
      * Add HTTP params as a String and set the content type. This is added as a request header specifying
      * the parameter type for the call
-     * @param params raw parameter String
+     *
+     * @param params    raw parameter String
      * @param paramType eg: "application/json" or "text/xml"
      * @return request builder
      */
@@ -108,7 +113,8 @@ public class RequestBuilder
 
     /**
      * Add a single HTTP parameter
-     * @param key param key
+     *
+     * @param key   param key
      * @param value param value
      * @return request Builder
      */
@@ -120,6 +126,7 @@ public class RequestBuilder
 
     /**
      * Set the http request method as GET
+     *
      * @return request builder
      */
     public RequestBuilder withRequestMethodGet()
@@ -130,6 +137,7 @@ public class RequestBuilder
 
     /**
      * Set the http request method as POST
+     *
      * @return request builder
      */
     public RequestBuilder withRequestMethodPost()
@@ -140,6 +148,7 @@ public class RequestBuilder
 
     /**
      * Set the http request method as PUT
+     *
      * @return request builder
      */
     public RequestBuilder withRequestMethodPut()
@@ -150,6 +159,7 @@ public class RequestBuilder
 
     /**
      * Set the http request method as DELETE
+     *
      * @return request builder
      */
     public RequestBuilder withRequestMethodDelete()
@@ -166,6 +176,7 @@ public class RequestBuilder
 
     /**
      * Set any object to this field to get it returned through the data callback
+     *
      * @param data user data
      * @return request builder
      */
@@ -203,6 +214,7 @@ public class RequestBuilder
     /**
      * Receive progress notifications on a file download or upload.
      * This parameter will be ignored for text or image requests
+     *
      * @param listener file progress listener
      * @return request builder
      */
@@ -215,6 +227,7 @@ public class RequestBuilder
     /**
      * Make a network request to recieve data in the callback.
      * See also {@link RequestBuilder#connect(int, Velocity.ResponseListener)}
+     *
      * @param callback data callback
      */
     public void connect(Velocity.ResponseListener callback)
@@ -227,8 +240,9 @@ public class RequestBuilder
     /**
      * Make a network request to recieve data in the callback. The request id is returned so that
      * the same callback can be used for multiple calls.
+     *
      * @param requestId unique request id
-     * @param callback data callback
+     * @param callback  data callback
      */
     public void connect(int requestId, Velocity.ResponseListener callback)
     {
@@ -241,9 +255,9 @@ public class RequestBuilder
     private Request resolveRequest()
     {
         Request request;
-        if(requestType == RequestType.Download)
+        if (requestType == RequestType.Download)
             request = new DownloadRequest(this);
-        else if(requestType == RequestType.Upload)
+        else if (requestType == RequestType.Upload)
             request = new UploadRequest(this);
         else
             request = new Request(this);

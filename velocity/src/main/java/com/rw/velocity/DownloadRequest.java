@@ -1,6 +1,5 @@
 package com.rw.velocity;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +21,9 @@ class DownloadRequest extends Request
     }
 
     @Override
-    protected boolean readResponse()
+    boolean readResponse()
     {
-        boolean ret = false;
+        boolean ret;
 
         NetLog.d("read response in download request");
         try
@@ -46,10 +45,10 @@ class DownloadRequest extends Request
 
                     totalRead += bytesRead;
 
-                    if(mBuilder.progressListener != null)
+                    if (mBuilder.progressListener != null)
                     {
                         int prog = totalRead * 100 / contentLen;
-                        if(prog > mPrevProgress)
+                        if (prog > mPrevProgress)
                         {
                             mPrevProgress = prog;
                             mBuilder.progressListener.onFileProgress(prog);

@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by ravindu on 13/12/16.
  */
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Velocity
 {
     static Settings mSettings = new Settings();
@@ -26,6 +26,7 @@ public class Velocity
 
     /**
      * IMPORTANT: Please initialize the background thread(s) before making any requests
+     *
      * @param numThreads number of background threads to handle network connections.
      *                   The recommended value is 3, but could be increased based on application
      *                   complexity.
@@ -46,9 +47,10 @@ public class Velocity
     /**
      * Prepare a builder to make a network call. Http request type will be "GET" by default
      * Minimum argument call looks like this: Velocity.load(url).connect(callback)
-     *
+     * <p>
      * If the return type is an image, it will be in Velocity.Data.image as a Bitmap
      * If it is any other type, the reply will be in Velocity.Data.body as raw text
+     *
      * @param url request address
      * @return request builder
      */
@@ -59,6 +61,7 @@ public class Velocity
 
     /**
      * Prepare a builder to make a file download request. Http request type will be "GET" by default
+     *
      * @param url request address
      * @return request builder
      */
@@ -69,6 +72,7 @@ public class Velocity
 
     /**
      * Prepare a builder to make an upload request. Http request type will be "POST" by default
+     *
      * @param url request address
      * @return request builder
      */
@@ -78,8 +82,6 @@ public class Velocity
     }
 
 
-
-
     public enum DownloadType
     {
         Automatic, Base64toPdf, Base64toJpg
@@ -87,10 +89,14 @@ public class Velocity
 
     public static class Response
     {
-        @NonNull public final String body;
-        @NonNull public final Map<String, List<String>> responseHeaders;
-        @Nullable public final Bitmap image;
-        @Nullable public final Object userData;
+        @NonNull
+        public final String body;
+        @NonNull
+        public final Map<String, List<String>> responseHeaders;
+        @Nullable
+        public final Bitmap image;
+        @Nullable
+        public final Object userData;
         public final int status;
         public final int requestId;
 
@@ -110,6 +116,7 @@ public class Velocity
     public interface ResponseListener
     {
         void onVelocitySuccess(Response response);
+
         void onVelocityFailed(Response error);
     }
 
@@ -133,6 +140,7 @@ public class Velocity
         /**
          * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
          * A timeout of zero is interpreted as an infinite timeout.
+         *
          * @param timeout connection timeout in milliseconds
          */
         public void setTimeout(int timeout)
@@ -144,6 +152,7 @@ public class Velocity
          * Sets the read timeout to a specified timeout, in milliseconds. A non-zero value specifies the timeout when
          * reading from Input stream once a connection is established to a resource.
          * A timeout of zero is interpreted as an infinite timeout.
+         *
          * @param readTimeout read timeout in milliseconds
          */
         public void setReadTimeout(int readTimeout)
@@ -154,6 +163,7 @@ public class Velocity
         /**
          * Set the boundary String for multi-part uploads.
          * The default is "*****"
+         *
          * @param boundary multi-part upload boundary string
          */
         public void setMultipartBoundary(String boundary)
@@ -164,6 +174,7 @@ public class Velocity
         /**
          * Set the buffer size for multi-part uploads
          * Default size is 1024KB
+         *
          * @param bufferSize upload buffer size
          */
         public void setUploadBufferSize(int bufferSize)
@@ -172,8 +183,10 @@ public class Velocity
         }
     }
 
-    /**Get the current Settings instance. It is best to leave them unchanged
+    /**
+     * Get the current Settings instance. It is best to leave them unchanged
      * unless you really want to customize the values
+     *
      * @return Velocity Global settings
      */
     public static Settings getSettings()

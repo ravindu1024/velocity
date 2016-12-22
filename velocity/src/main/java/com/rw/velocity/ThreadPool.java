@@ -19,11 +19,11 @@ class ThreadPool
 {
     private static ThreadPool mInstance = null;
     private HandlerThread[] mThreads = null;
-    private ArrayList<Handler> mHandlers = new ArrayList<>();
+    private final ArrayList<Handler> mHandlers = new ArrayList<>();
     private int lastThread = 0;
     @SuppressWarnings("FieldCanBeLocal")
     private final Boolean syncObject = false;
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
 
     private ThreadPool()
@@ -34,7 +34,7 @@ class ThreadPool
     @NonNull
     static ThreadPool getThreadPool()
     {
-        if(mInstance == null || mInstance.mHandlers.isEmpty())
+        if (mInstance == null || mInstance.mHandlers.isEmpty())
             throw new IllegalStateException("Threadpool not initialized. Please call Velocity.initialize(int)");
 
         return mInstance;
@@ -42,29 +42,30 @@ class ThreadPool
 
     /**
      * Initialize the http thread pool
+     *
      * @param num number of threads in thread pool
      */
     static void initialize(int num) throws InterruptedException
     {
-        if(mInstance == null)
+        if (mInstance == null)
         {
             mInstance = new ThreadPool();
             mInstance.mThreads = new HandlerThread[num];
 
-            for(int i=0; i<num; i++)
+            for (int i = 0; i < num; i++)
             {
                 mInstance.mThreads[i] = new HandlerThread("Velocity_workerThread_" + i);
                 mInstance.mThreads[i].start();
 
                 int count = 0;
-                while(mInstance.mThreads[i].getLooper() == null && count++ < 10)
+                while (mInstance.mThreads[i].getLooper() == null && count++ < 10)
                 {
                     Thread.sleep(50);
                 }
 
                 Looper l = mInstance.mThreads[i].getLooper();
 
-                if(mInstance.mThreads[i].getLooper() != null)
+                if (mInstance.mThreads[i].getLooper() != null)
                 {
                     mInstance.mHandlers.add(new Handler(l));
                 }

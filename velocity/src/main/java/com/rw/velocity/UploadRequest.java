@@ -22,7 +22,7 @@ class UploadRequest extends Request
 
 
     @Override
-    protected void setupRequestHeaders()
+    void setupRequestHeaders()
     {
         super.setupRequestHeaders();
 
@@ -32,7 +32,7 @@ class UploadRequest extends Request
 
 
     @Override
-    protected void setupRequestBody() throws IOException
+    void setupRequestBody() throws IOException
     {
         int bytesRead;
         int bytesAvailable;

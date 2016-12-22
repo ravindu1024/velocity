@@ -52,29 +52,29 @@ class Request
         boolean success = initializeConnection();
         NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
-        if(success)
+        if (success)
         {
             success = readResponse();
 
-            if(!success)
+            if (!success)
                 readError();
         }
 
         returnResponse(success);
     }
 
-    protected void setupRequestHeaders()
+    void setupRequestHeaders()
     {
-        if(!mBuilder.headers.isEmpty())
+        if (!mBuilder.headers.isEmpty())
         {
-            for(String key : mBuilder.headers.keySet())
+            for (String key : mBuilder.headers.keySet())
                 mConnection.setRequestProperty(key, mBuilder.headers.get(key));
         }
     }
 
-    protected void setupRequestBody() throws IOException
+    void setupRequestBody() throws IOException
     {
-        if(mBuilder.requestMethod.equalsIgnoreCase("GET") || mBuilder.requestMethod.equalsIgnoreCase("COPY") || mBuilder.requestMethod.equalsIgnoreCase("HEAD")
+        if (mBuilder.requestMethod.equalsIgnoreCase("GET") || mBuilder.requestMethod.equalsIgnoreCase("COPY") || mBuilder.requestMethod.equalsIgnoreCase("HEAD")
                 || mBuilder.requestMethod.equalsIgnoreCase("PURGE") || mBuilder.requestMethod.equalsIgnoreCase("UNLOCK"))
         {
             //do not send params for these request methods
@@ -134,7 +134,7 @@ class Request
         {
             URL url = new URL(mBuilder.url);
 
-            if(url.getProtocol().equalsIgnoreCase("https"))
+            if (url.getProtocol().equalsIgnoreCase("https"))
                 mConnection = (HttpsURLConnection) url.openConnection();
             else
                 mConnection = (HttpURLConnection) url.openConnection();
@@ -161,10 +161,10 @@ class Request
             mResponse = new StringBuilder(ioe.getMessage());
         }
 
-        return  ret;
+        return ret;
     }
 
-    protected boolean readResponse()
+    boolean readResponse()
     {
         boolean ret;
 
@@ -173,7 +173,7 @@ class Request
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
             {
 
-                if(mConnection.getContentType().startsWith("image"))
+                if (mConnection.getContentType().startsWith("image"))
                 {
                     mResponseImage = BitmapFactory.decodeStream(mConnection.getInputStream());
                     mResponse.append(mConnection.getContentType());
@@ -227,18 +227,18 @@ class Request
     private void returnResponse(final boolean success)
     {
         final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
-                                                mResponse.toString(),
-                                                mResponseCode,
-                                                mConnection.getHeaderFields(),
-                                                mResponseImage,
-                                                mBuilder.userData);
+                mResponse.toString(),
+                mResponseCode,
+                mConnection.getHeaderFields(),
+                mResponseImage,
+                mBuilder.userData);
 
         Runnable r = new Runnable()
         {
             @Override
             public void run()
             {
-                if(mBuilder.callback != null)
+                if (mBuilder.callback != null)
                 {
                     if (success)
                         mBuilder.callback.onVelocitySuccess(reply);
