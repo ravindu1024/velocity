@@ -1,18 +1,14 @@
 package com.rw.velocityapp;
 
 import android.app.ProgressDialog;
-import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rw.velocity.Velocity;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -26,8 +22,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView)findViewById(R.id.textView);
-        imageView = (ImageView)findViewById(R.id.imageView);
+        textView = (TextView) findViewById(R.id.textView);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         Velocity.initialize(3);
         Velocity.getSettings().setTimeout(6000);
@@ -38,6 +34,7 @@ public class MainActivity extends AppCompatActivity
         String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
         String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
 
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(false);
         progressDialog.setMessage("downloading file...");
@@ -47,18 +44,19 @@ public class MainActivity extends AppCompatActivity
 
         downloadRequest(file);
 
+
     }
+
 
     private void downloadRequest(String url)
     {
         progressDialog.show();
         String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
 
-        File f = new File(filepath);
-        Log.d("IMG", "permissions: read: " + f.canRead()+", write: "+f.canWrite());
         Log.d("IMG", "target filename: " + filepath);
 
-        Velocity.download(url).setDownloadFile(filepath)
+        Velocity.download(url)
+                .setDownloadFile(filepath)
                 .withProgressListener(new Velocity.ProgressListener()
                 {
                     @Override
@@ -69,23 +67,23 @@ public class MainActivity extends AppCompatActivity
                     }
                 })
                 .connect(new Velocity.ResponseListener()
-        {
-            @Override
-            public void onVelocitySuccess(Velocity.Response response)
-            {
-                Log.d("IMG", "response: "+response.body);
-                textView.setText(response.body);
-                progressDialog.dismiss();
-            }
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        Log.d("IMG", "response: " + response.body);
+                        textView.setText(response.body);
+                        progressDialog.dismiss();
+                    }
 
-            @Override
-            public void onVelocityFailed(Velocity.Response error)
-            {
-                Log.d("IMG", "error: "+error.body);
-                textView.setText(error.status + ": "+ error.body);
-                progressDialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        Log.d("IMG", "error: " + error.body);
+                        textView.setText(error.status + ": " + error.body);
+                        progressDialog.dismiss();
+                    }
+                });
     }
 
     private void textRequest(String url)
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity
             {
                 //Log.d("IMG", "response: " + response.body);
                 textView.setText(response.body);
-                if(response.image != null)
+                if (response.image != null)
                     imageView.setImageBitmap(response.image);
             }
 

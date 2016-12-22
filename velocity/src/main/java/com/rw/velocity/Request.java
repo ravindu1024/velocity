@@ -63,7 +63,7 @@ class Request
         returnResponse(success);
     }
 
-    private void setupRequestHeaders()
+    protected void setupRequestHeaders()
     {
         if(!mBuilder.headers.isEmpty())
         {
@@ -72,7 +72,7 @@ class Request
         }
     }
 
-    private void setupRequestBody() throws IOException
+    protected void setupRequestBody() throws IOException
     {
         if(mBuilder.requestMethod.equalsIgnoreCase("GET") || mBuilder.requestMethod.equalsIgnoreCase("COPY") || mBuilder.requestMethod.equalsIgnoreCase("HEAD")
                 || mBuilder.requestMethod.equalsIgnoreCase("PURGE") || mBuilder.requestMethod.equalsIgnoreCase("UNLOCK"))
@@ -128,7 +128,7 @@ class Request
 
     private boolean initializeConnection()
     {
-        boolean ret = false;
+        boolean ret;
 
         try
         {
@@ -140,12 +140,14 @@ class Request
                 mConnection = (HttpURLConnection) url.openConnection();
 
             mConnection.setRequestMethod(mBuilder.requestMethod);
-            mConnection.setConnectTimeout(Velocity.mSettings.TIMEOUT);
-            mConnection.setReadTimeout(Velocity.mSettings.READ_TIMEOUT);
+            mConnection.setConnectTimeout(Velocity.Settings.TIMEOUT);
+            mConnection.setReadTimeout(Velocity.Settings.READ_TIMEOUT);
 
             setupRequestHeaders();
 
             setupRequestBody();
+
+            NetLog.d("upload done");
 
             mConnection.connect();
 
@@ -164,7 +166,7 @@ class Request
 
     protected boolean readResponse()
     {
-        boolean ret = false;
+        boolean ret;
 
         try
         {

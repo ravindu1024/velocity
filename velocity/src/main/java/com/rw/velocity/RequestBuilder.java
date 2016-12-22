@@ -1,7 +1,6 @@
 package com.rw.velocity;
 
-import android.net.Uri;
-
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -10,18 +9,18 @@ import java.util.HashMap;
  * Created by ravindu on 13/12/16.
  */
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class RequestBuilder
 {
     HashMap<String, String> headers = new HashMap<>();
     HashMap<String, String> params = new HashMap<>();
-    String rawParams = null;
+    String rawParams;
     String requestMethod = "GET";
-    Object userData = null;
-    Uri uploadFile;
+    Object userData;
+    String uploadFile;
+    InputStream uploadStream;
     String downloadFile;
     Velocity.DownloadType downloadType;
-    String uploadServerFileName = "";
     int requestId = 0;
     Velocity.ResponseListener callback;
     final String url;
@@ -34,11 +33,11 @@ public class RequestBuilder
         Text, Download, Upload
     }
 
-    private RequestBuilder()
-    {
-        //will not be called from outside
-        this.url = null;
-    }
+//    private RequestBuilder()
+//    {
+//        //will not be called from outside
+//        this.url = null;
+//    }
 
     public RequestBuilder(String url, RequestType type)
     {
@@ -98,7 +97,7 @@ public class RequestBuilder
      * the parameter type for the call
      * @param params raw parameter String
      * @param paramType eg: "application/json" or "text/xml"
-     * @return
+     * @return request builder
      */
     public RequestBuilder withBody(String params, String paramType)
     {
@@ -188,17 +187,18 @@ public class RequestBuilder
         return this;
     }
 
-    public RequestBuilder setUploadFile(Uri uploadFile)
+    public RequestBuilder setUploadSource(String uploadFile)
     {
         this.uploadFile = uploadFile;
         return this;
     }
 
-    public RequestBuilder setUploadDestinationFileName(String name)
+    public RequestBuilder setUploadSource(InputStream uploadStream)
     {
-        this.uploadServerFileName = name;
+        this.uploadStream = uploadStream;
         return this;
     }
+
 
     /**
      * Receive progress notifications on a file download or upload.

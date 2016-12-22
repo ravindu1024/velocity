@@ -121,8 +121,14 @@ public class Velocity
 
     public static class Settings
     {
-        int TIMEOUT = 5000;
-        int READ_TIMEOUT = 30000;
+        static int TIMEOUT = 10000;
+        static int READ_TIMEOUT = 30000;
+
+        //upload settings
+        static final String LINEEND = "\r\n";
+        static final String TWOHYPHENS = "--";
+        static String BOUNDARY = "*****";
+        static int MAX_BUFFER = 1024 * 1024;
 
         /**
          * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
@@ -144,8 +150,32 @@ public class Velocity
         {
             READ_TIMEOUT = readTimeout;
         }
+
+        /**
+         * Set the boundary String for multi-part uploads.
+         * The default is "*****"
+         * @param boundary multi-part upload boundary string
+         */
+        public void setMultipartBoundary(String boundary)
+        {
+            BOUNDARY = boundary;
+        }
+
+        /**
+         * Set the buffer size for multi-part uploads
+         * Default size is 1024KB
+         * @param bufferSize upload buffer size
+         */
+        public void setUploadBufferSize(int bufferSize)
+        {
+            MAX_BUFFER = bufferSize;
+        }
     }
 
+    /**Get the current Settings instance. It is best to leave them unchanged
+     * unless you really want to customize the values
+     * @return Velocity Global settings
+     */
     public static Settings getSettings()
     {
         return mSettings;
