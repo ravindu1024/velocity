@@ -25,7 +25,6 @@ class DownloadRequest extends Request
     {
         boolean ret;
 
-        NetLog.d("read response in download request");
         try
         {
             if (mResponseCode / 100 == 2) //all 2xx codes are OK

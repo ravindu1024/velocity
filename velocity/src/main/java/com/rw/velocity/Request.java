@@ -147,8 +147,6 @@ class Request
 
             setupRequestBody();
 
-            NetLog.d("upload done");
-
             mConnection.connect();
 
             mResponseCode = mConnection.getResponseCode();
