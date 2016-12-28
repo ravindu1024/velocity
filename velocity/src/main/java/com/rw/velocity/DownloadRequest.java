@@ -37,7 +37,7 @@ class DownloadRequest extends Request
                 int bytesRead;
                 int totalRead = 0;
                 int contentLen = mConnection.getContentLength();
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[Velocity.Settings.MAX_BUFFER];
                 while ((bytesRead = inputStream.read(buffer)) != -1)
                 {
                     outputStream.write(buffer, 0, bytesRead);

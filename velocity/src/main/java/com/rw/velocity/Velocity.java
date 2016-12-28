@@ -135,7 +135,7 @@ public class Velocity
         static final String LINEEND = "\r\n";
         static final String TWOHYPHENS = "--";
         static String BOUNDARY = "*****";
-        static int MAX_BUFFER = 1024 * 1024;
+        static int MAX_BUFFER = 4096;
 
         /**
          * Sets a specified timeout value, in milliseconds, to be used when opening a connection to the specified URL.
@@ -177,7 +177,7 @@ public class Velocity
          *
          * @param bufferSize upload buffer size
          */
-        public void setUploadBufferSize(int bufferSize)
+        public void setMaxTransferBufferSize(int bufferSize)
         {
             MAX_BUFFER = bufferSize;
         }

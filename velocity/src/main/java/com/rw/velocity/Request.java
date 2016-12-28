@@ -65,6 +65,8 @@ class Request
 
     void setupRequestHeaders()
     {
+        mConnection.setRequestProperty("User-Agent", "velocity-android-http-client");
+
         if (!mBuilder.headers.isEmpty())
         {
             for (String key : mBuilder.headers.keySet())
@@ -106,7 +108,7 @@ class Request
         }
     }
 
-    private String getFormattedParams() throws UnsupportedEncodingException
+    String getFormattedParams() throws UnsupportedEncodingException
     {
         StringBuilder params = new StringBuilder();
         boolean first = true;

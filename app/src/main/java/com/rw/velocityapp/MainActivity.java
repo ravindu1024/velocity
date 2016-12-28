@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,10 +29,12 @@ public class MainActivity extends AppCompatActivity
         Velocity.initialize(3);
         Velocity.getSettings().setTimeout(6000);
         Velocity.getSettings().setReadTimeout(10000);
+        Velocity.getSettings().setMultipartBoundary("----WebKitFormBoundaryQHJL2hsKnlU26Mm3");
+        Velocity.getSettings().setMaxTransferBufferSize(1024);
 
         String m3 = "https://media.caranddriver.com/images/media/331369/m-is-for-mega-2015-bmw-m3-pricing-surfaces-photo-583888-s-450x274.jpg";
         String randomImage = "http://lorempixel.com/400/200/abstract";
-        String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
+        final String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
         String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
 
 
@@ -42,14 +45,67 @@ public class MainActivity extends AppCompatActivity
         progressDialog.setCancelable(false);
 
 
-        downloadRequest(file);
+        //
+        imageView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                uploadFile();
+                //downloadRequest(file);
+            }
+        });
 
 
+    }
+
+    private void uploadFile()
+    {
+        String file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "m3_2.jpg";
+
+
+        progressDialog.setMessage("uploading image");
+        progressDialog.show();
+
+        Velocity.upload(url)
+                .withRequestMethodPost()
+                .setUploadSource("uploadedfile", "image/jpeg", file)
+//                .withParam("first_name", "test_first")
+//                .withParam("last_name", "test_last11")
+//                .withParam("phone_number", "123456789")
+                .withProgressListener(new Velocity.ProgressListener()
+                {
+                    @Override
+                    public void onFileProgress(int percentage)
+                    {
+                        //Log.d("IMG", "upload progress: " + percentage);
+                        progressDialog.setProgress(percentage);
+                    }
+                })
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        progressDialog.dismiss();
+                        textView.setText(response.body);
+                        Log.d("IMG", "uploaded: " + response.body);
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        progressDialog.dismiss();
+                        textView.setText(error.body);
+                        Log.d("IMG", "upload error: " + error.body);
+                    }
+                });
     }
 
 
     private void downloadRequest(String url)
     {
+        progressDialog.setMessage("downloading file");
         progressDialog.show();
         String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
 

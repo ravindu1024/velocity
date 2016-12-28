@@ -18,6 +18,8 @@ public class RequestBuilder
     String requestMethod = "GET";
     Object userData;
     String uploadFile;
+    String uploadParamName;
+    String uploadMimeType;
     InputStream uploadStream;
     String downloadFile;
     Velocity.DownloadType downloadType;
@@ -198,14 +200,18 @@ public class RequestBuilder
         return this;
     }
 
-    public RequestBuilder setUploadSource(String uploadFile)
+    public RequestBuilder setUploadSource(String paramName, String mimeType, String uploadFile)
     {
+        this.uploadMimeType = mimeType;
         this.uploadFile = uploadFile;
+        this.uploadParamName = paramName;
         return this;
     }
 
-    public RequestBuilder setUploadSource(InputStream uploadStream)
+    public RequestBuilder setUploadSource(String paramName, String mimeType, InputStream uploadStream)
     {
+        this.uploadMimeType = mimeType;
+        this.uploadParamName = paramName;
         this.uploadStream = uploadStream;
         return this;
     }

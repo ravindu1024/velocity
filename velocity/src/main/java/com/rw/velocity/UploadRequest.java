@@ -1,5 +1,9 @@
 package com.rw.velocity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +31,8 @@ class UploadRequest extends Request
         super.setupRequestHeaders();
 
         mConnection.setRequestProperty("Connection", "Keep-Alive");
-        mConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + Velocity.Settings.BOUNDARY);
+        mConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + Velocity.Settings.BOUNDARY);
+        mConnection.setRequestProperty("Cache-Control", "no-cache");
     }
 
 
@@ -53,21 +58,23 @@ class UploadRequest extends Request
         else
             fileInputStream = new FileInputStream(new File(mBuilder.uploadFile));
 
-
-        DataOutputStream dos = new DataOutputStream(mConnection.getOutputStream());
-
-        dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
-        dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"uploadedfile\"" + Velocity.Settings.LINEEND);
-        dos.writeBytes(Velocity.Settings.LINEEND);
-
         bytesAvailable = fileInputStream.available();
         bufferSize = Math.min(bytesAvailable, maxBufferSize);
         buffer = new byte[bufferSize];
 
         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
         int totalToWrite = bytesAvailable;
         int totalWritten = 0;
+
+
+        DataOutputStream dos = new DataOutputStream(mConnection.getOutputStream());
+
+        dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
+        dos.writeBytes("Content-Disposition: form-data; name=\"" + mBuilder.uploadParamName + "\"; filename=\"" + "uploadfile" + "\"" + Velocity.Settings.LINEEND);
+        dos.writeBytes("Content-Type: " + mBuilder.uploadMimeType + Velocity.Settings.LINEEND);
+        dos.writeBytes(Velocity.Settings.LINEEND);
+
+
         while (bytesRead > 0)
         {
             dos.write(buffer, 0, bufferSize);
@@ -88,15 +95,28 @@ class UploadRequest extends Request
                 }
             }
         }
-
         dos.writeBytes(Velocity.Settings.LINEEND);
+
+
+        //write other form data
+        for(String param : mBuilder.params.keySet())
+        {
+            String val = mBuilder.params.get(param);
+
+            dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
+            dos.writeBytes("Content-Disposition: form-data; name=\"" + param + "\"" + Velocity.Settings.LINEEND);
+            dos.writeBytes("Content-Type: text/plain" + Velocity.Settings.LINEEND);
+            dos.writeBytes(Velocity.Settings.LINEEND);
+            dos.writeBytes(val);
+            dos.writeBytes(Velocity.Settings.LINEEND);
+        }
+
+        //end all post data
         dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.TWOHYPHENS + Velocity.Settings.LINEEND);
 
-
-        fileInputStream.close();
         dos.flush();
         dos.close();
-
+        fileInputStream.close();
     }
 
 }
