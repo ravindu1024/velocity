@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
         String randomImage = "http://lorempixel.com/400/200/abstract";
         final String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
         String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
+        final String sushi = "https://s3-ap-southeast-2.amazonaws.com/platform.cdn/clients/dev/filemanager/root/157e4ce754803c1.94820022_Tempura%20Soba.jpg?response-content-disposition=attachment%3B%20filename%3D%22Tempura%20Soba.jpg%22&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWZTEEFKHKIKCC3A%2F20161228%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20161228T065659Z&X-Amz-SignedHeaders=host&X-Amz-Expires=5400&X-Amz-Signature=651830960fab463cd9fcc9345a3e47cac2181fe0cad793e2785bb1af7c7fae2d";
 
 
         progressDialog = new ProgressDialog(this);
@@ -51,56 +52,56 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                uploadFile();
-                //downloadRequest(file);
+                //uploadFile();
+                downloadRequest(sushi);
             }
         });
 
 
     }
 
-    private void uploadFile()
-    {
-        String file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "m3_2.jpg";
-
-
-        progressDialog.setMessage("uploading image");
-        progressDialog.show();
-
-        Velocity.upload(url)
-                .withRequestMethodPost()
-                .setUploadSource("uploadedfile", "image/jpeg", file)
-//                .withParam("first_name", "test_first")
-//                .withParam("last_name", "test_last11")
-//                .withParam("phone_number", "123456789")
-                .withProgressListener(new Velocity.ProgressListener()
-                {
-                    @Override
-                    public void onFileProgress(int percentage)
-                    {
-                        //Log.d("IMG", "upload progress: " + percentage);
-                        progressDialog.setProgress(percentage);
-                    }
-                })
-                .connect(new Velocity.ResponseListener()
-                {
-                    @Override
-                    public void onVelocitySuccess(Velocity.Response response)
-                    {
-                        progressDialog.dismiss();
-                        textView.setText(response.body);
-                        Log.d("IMG", "uploaded: " + response.body);
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        progressDialog.dismiss();
-                        textView.setText(error.body);
-                        Log.d("IMG", "upload error: " + error.body);
-                    }
-                });
-    }
+//    private void uploadFile()
+//    {
+//        String file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "m3_2.jpg";
+//
+//
+//        progressDialog.setMessage("uploading image");
+//        progressDialog.show();
+//
+//        Velocity.upload(url)
+//                .withRequestMethodPost()
+//                .setUploadSource("uploadedfile", "image/jpeg", file)
+////                .withParam("first_name", "test_first")
+////                .withParam("last_name", "test_last11")
+////                .withParam("phone_number", "123456789")
+//                .withProgressListener(new Velocity.ProgressListener()
+//                {
+//                    @Override
+//                    public void onFileProgress(int percentage)
+//                    {
+//                        //Log.d("IMG", "upload progress: " + percentage);
+//                        progressDialog.setProgress(percentage);
+//                    }
+//                })
+//                .connect(new Velocity.ResponseListener()
+//                {
+//                    @Override
+//                    public void onVelocitySuccess(Velocity.Response response)
+//                    {
+//                        progressDialog.dismiss();
+//                        textView.setText(response.body);
+//                        Log.d("IMG", "uploaded: " + response.body);
+//                    }
+//
+//                    @Override
+//                    public void onVelocityFailed(Velocity.Response error)
+//                    {
+//                        progressDialog.dismiss();
+//                        textView.setText(error.body);
+//                        Log.d("IMG", "upload error: " + error.body);
+//                    }
+//                });
+//    }
 
 
     private void downloadRequest(String url)
