@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +84,12 @@ public class Velocity
     }
 
 
+    public static void executeQueue(MultiResponseListener callback)
+    {
+        MultiResponseHandler.execute(callback);
+    }
+
+
     public enum DownloadType
     {
         Automatic, Base64toPdf, Base64toJpg
@@ -118,6 +126,13 @@ public class Velocity
         void onVelocitySuccess(Response response);
 
         void onVelocityFailed(Response error);
+    }
+
+    public interface MultiResponseListener
+    {
+        void onVelocityMultiResponseSuccess(HashMap<Integer, Response> responseMap);
+
+        void onVelocityMultiResponseError(HashMap<Integer, Response> errorMap);
     }
 
     public interface ProgressListener

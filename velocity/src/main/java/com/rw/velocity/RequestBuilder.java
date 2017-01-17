@@ -258,6 +258,14 @@ public class RequestBuilder
         ThreadPool.getThreadPool().postRequest(resolveRequest());
     }
 
+
+    public void queue(int requestId)
+    {
+        this.requestId = requestId;
+
+        MultiResponseHandler.addToQueue(this);
+    }
+
     private Request resolveRequest()
     {
         Request request;
