@@ -60,49 +60,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-//    private void uploadFile()
-//    {
-//        String file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "m3_2.jpg";
-//
-//
-//        progressDialog.setMessage("uploading image");
-//        progressDialog.show();
-//
-//        Velocity.upload(url)
-//                .withRequestMethodPost()
-//                .setUploadSource("uploadedfile", "image/jpeg", file)
-////                .withParam("first_name", "test_first")
-////                .withParam("last_name", "test_last11")
-////                .withParam("phone_number", "123456789")
-//                .withProgressListener(new Velocity.ProgressListener()
-//                {
-//                    @Override
-//                    public void onFileProgress(int percentage)
-//                    {
-//                        //Log.d("IMG", "upload progress: " + percentage);
-//                        progressDialog.setProgress(percentage);
-//                    }
-//                })
-//                .connect(new Velocity.ResponseListener()
-//                {
-//                    @Override
-//                    public void onVelocitySuccess(Velocity.Response response)
-//                    {
-//                        progressDialog.dismiss();
-//                        textView.setText(response.body);
-//                        Log.d("IMG", "uploaded: " + response.body);
-//                    }
-//
-//                    @Override
-//                    public void onVelocityFailed(Velocity.Response error)
-//                    {
-//                        progressDialog.dismiss();
-//                        textView.setText(error.body);
-//                        Log.d("IMG", "upload error: " + error.body);
-//                    }
-//                });
-//    }
-
 
     private void downloadRequest(String url)
     {
@@ -137,7 +94,7 @@ public class MainActivity extends AppCompatActivity
                     public void onVelocityFailed(Velocity.Response error)
                     {
                         Log.d("IMG", "error: " + error.body);
-                        textView.setText(error.status + ": " + error.body);
+                        textView.setText(error.responseCode + ": " + error.body);
                         progressDialog.dismiss();
                     }
                 });

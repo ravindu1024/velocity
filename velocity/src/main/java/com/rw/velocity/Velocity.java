@@ -97,14 +97,14 @@ public class Velocity
         public final Bitmap image;
         @Nullable
         public final Object userData;
-        public final int status;
+        public final int responseCode;
         public final int requestId;
 
         Response(int requestId, @NonNull String body, int status, @NonNull Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
         {
             this.requestId = requestId;
             this.body = body;
-            this.status = status;
+            this.responseCode = status;
             this.responseHeaders = responseHeaders;
             this.image = image;
             this.userData = userData;
@@ -145,6 +145,7 @@ public class Velocity
          */
         public void setTimeout(int timeout)
         {
+            NetLog.d("set connection timeout: " + timeout);
             TIMEOUT = timeout;
         }
 
@@ -157,6 +158,7 @@ public class Velocity
          */
         public void setReadTimeout(int readTimeout)
         {
+            NetLog.d("set read timeout: " + readTimeout);
             READ_TIMEOUT = readTimeout;
         }
 
@@ -168,6 +170,7 @@ public class Velocity
          */
         public void setMultipartBoundary(String boundary)
         {
+            NetLog.d("set multipart boundary: " + boundary);
             BOUNDARY = boundary;
         }
 
@@ -179,6 +182,7 @@ public class Velocity
          */
         public void setMaxTransferBufferSize(int bufferSize)
         {
+            NetLog.d("set max transfer buffer size: " + bufferSize);
             MAX_BUFFER = bufferSize;
         }
     }

@@ -3,6 +3,7 @@ package com.rw.velocity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.SystemClock;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -49,6 +50,7 @@ class Request
      */
     void execute()
     {
+        long t = SystemClock.elapsedRealtime();
         boolean success = initializeConnection();
         NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
@@ -60,6 +62,7 @@ class Request
                 readError();
         }
 
+        NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + (SystemClock.elapsedRealtime() - t) + "ms");
         returnResponse(success);
     }
 
