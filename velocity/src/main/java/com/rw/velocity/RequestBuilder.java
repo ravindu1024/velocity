@@ -1,5 +1,9 @@
 package com.rw.velocity;
 
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -23,6 +27,9 @@ public class RequestBuilder
     InputStream uploadStream;
     String downloadFile;
     Velocity.DownloadType downloadType;
+    String downloadUiTitle = "";
+    String downloadUiDescr = "";
+    Context context;
     int requestId = 0;
     Velocity.ResponseListener callback;
     final String url;
@@ -213,6 +220,16 @@ public class RequestBuilder
         this.uploadMimeType = mimeType;
         this.uploadParamName = paramName;
         this.uploadStream = uploadStream;
+        return this;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+    public RequestBuilder addToDownloadsFolder(Context context, String title, String description)
+    {
+        this.context = context;
+        this.downloadUiTitle = title;
+        this.downloadUiDescr = description;
+
         return this;
     }
 

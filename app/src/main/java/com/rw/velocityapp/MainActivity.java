@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 //textRequest(m3);
-                downloadRequest(file);
+                downloadRequest(m3);
             }
         });
 
@@ -110,12 +110,13 @@ public class MainActivity extends AppCompatActivity
     {
         progressDialog.setMessage("downloading file");
         progressDialog.show();
-        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
+        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.png";
 
         Log.d("IMG", "target filename: " + filepath);
 
         Velocity.download(url)
                 .setDownloadFile(filepath)
+                .addToDownloadsFolder(this, "download test", "test file")
                 .withProgressListener(new Velocity.ProgressListener()
                 {
                     @Override

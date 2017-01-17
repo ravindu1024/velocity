@@ -1,5 +1,12 @@
 package com.rw.velocity;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.webkit.MimeTypeMap;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +77,24 @@ class DownloadRequest extends Request
         {
             mResponse = new StringBuilder(ioe.getMessage());
             ret = false;
+        }
+
+
+        if(mBuilder.context != null)
+        {
+            //add file to download ui
+            DownloadManager manager = (DownloadManager)mBuilder.context.getSystemService(Context.DOWNLOAD_SERVICE);
+            File f = new File(mBuilder.downloadFile);
+            String extension = MimeTypeMap.getFileExtensionFromUrl(f.getAbsolutePath());
+            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+            if(mimeType == null)
+                mimeType = "*/*";
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1)
+            {
+                manager.addCompletedDownload(mBuilder.downloadUiTitle, mBuilder.downloadUiDescr, true, mimeType, f.getAbsolutePath(), f.length(), true);
+            }
         }
 
 
