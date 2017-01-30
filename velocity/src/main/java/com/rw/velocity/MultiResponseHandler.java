@@ -1,5 +1,6 @@
 package com.rw.velocity;
 
+import android.annotation.SuppressLint;
 import android.app.VoiceInteractor;
 import android.service.voice.VoiceInteractionSession;
 
@@ -18,14 +19,16 @@ class MultiResponseHandler implements Velocity.ResponseListener
     private Velocity.MultiResponseListener mCallback;
     private int mTotalRequestCount = 0;
     private boolean mIsFailed = false;
+    private final static Boolean mLock = true;
 
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer, Velocity.Response> mResponses = new HashMap<>();
 
     private static ArrayList<RequestBuilder> mRequestList = new ArrayList<>();
 
     static void addToQueue(RequestBuilder request)
     {
-        synchronized (mRequestList)
+        synchronized (mLock)
         {
             mRequestList.add(request);
         }
@@ -33,7 +36,7 @@ class MultiResponseHandler implements Velocity.ResponseListener
 
     static void execute(Velocity.MultiResponseListener callback)
     {
-        synchronized (mRequestList)
+        synchronized (mLock)
         {
             new MultiResponseHandler()._execute(callback);
 

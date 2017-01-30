@@ -52,7 +52,7 @@ class Request
     {
         long t = SystemClock.elapsedRealtime();
         boolean success = initializeConnection();
-        NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
+        //NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
         if (success)
         {
@@ -62,8 +62,16 @@ class Request
                 readError();
         }
 
-        NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + (SystemClock.elapsedRealtime() - t) + "ms");
+        NetLog.d(padRight(mResponseCode + "/" + mBuilder.requestMethod , 10)+ " : " + padLeft((SystemClock.elapsedRealtime() - t) + "ms : ", 10) + mBuilder.url);
         returnResponse(success);
+    }
+
+    private String padLeft(String s, int n) {
+        return String.format("%1$" + n + "s", s);
+    }
+
+    private String padRight(String s, int n) {
+        return String.format("%1$-" + n + "s", s);
     }
 
     void setupRequestHeaders()

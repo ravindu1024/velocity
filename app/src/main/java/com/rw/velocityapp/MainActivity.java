@@ -59,12 +59,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 //textRequest(m3);
-                downloadRequest(m3);
+                //downloadRequest(m3);
+                doMultiRequest();
             }
         });
 
-        //doMultiRequest();
     }
+
 
     private void doMultiRequest()
     {
