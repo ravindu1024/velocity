@@ -17,6 +17,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -51,26 +55,46 @@ class Request
     void execute()
     {
         long t = SystemClock.elapsedRealtime();
-        boolean success = initializeConnection();
-        //NetLog.d("HTTP : " + mResponseCode + "/" + mBuilder.requestMethod + " : " + mBuilder.url);
 
-        if (success)
+        if(mBuilder.mocked)
         {
-            success = readResponse();
+            try
+            {
+                Thread.sleep(Velocity.Settings.MOCK_RESPONSE_TIME);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
 
-            if (!success)
-                readError();
+            NetLog.d(padRight("MOCKED/" + mBuilder.requestMethod, 10) + " : " + padLeft((SystemClock.elapsedRealtime() - t) + "ms : ", 10) + mBuilder.url);
+            returnMockResponse();
         }
+        else
+        {
 
-        NetLog.d(padRight(mResponseCode + "/" + mBuilder.requestMethod , 10)+ " : " + padLeft((SystemClock.elapsedRealtime() - t) + "ms : ", 10) + mBuilder.url);
-        returnResponse(success);
+            boolean success = initializeConnection();
+
+            if (success)
+            {
+                success = readResponse();
+
+                if (!success)
+                    readError();
+            }
+
+            NetLog.d(padRight(mResponseCode + "/" + mBuilder.requestMethod, 10) + " : " + padLeft((SystemClock.elapsedRealtime() - t) + "ms : ", 10) + mBuilder.url);
+            returnResponse(success);
+        }
     }
 
-    private String padLeft(String s, int n) {
+    private String padLeft(String s, int n)
+    {
         return String.format("%1$" + n + "s", s);
     }
 
-    private String padRight(String s, int n) {
+    private String padRight(String s, int n)
+    {
         return String.format("%1$-" + n + "s", s);
     }
 
@@ -119,7 +143,7 @@ class Request
         }
     }
 
-    String getFormattedParams() throws UnsupportedEncodingException
+    private String getFormattedParams() throws UnsupportedEncodingException
     {
         StringBuilder params = new StringBuilder();
         boolean first = true;
@@ -233,6 +257,35 @@ class Request
             mResponse.append(e.getMessage());
         }
 
+    }
+
+    private void returnMockResponse()
+    {
+        Map<String, List<String>> map = new HashMap<>();
+        map.put("mock-response", new ArrayList<String>());
+
+        final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
+                mBuilder.mockResponse,
+                200,
+                map,
+                null,
+                mBuilder.userData);
+
+        Runnable r = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mBuilder.callback != null)
+                {
+                    mBuilder.callback.onVelocitySuccess(reply);
+                }
+                else
+                    NetLog.d("Warning: No Data callback supplied");
+            }
+        };
+
+        ThreadPool.getThreadPool().postToUiThread(r);
     }
 
     private void returnResponse(final boolean success)

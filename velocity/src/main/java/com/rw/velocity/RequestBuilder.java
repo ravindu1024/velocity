@@ -34,6 +34,8 @@ public class RequestBuilder
     Velocity.ResponseListener callback;
     final String url;
     Velocity.ProgressListener progressListener;
+    boolean mocked = false;
+    String mockResponse = "";
 
     private RequestType requestType = RequestType.Text;
 
@@ -42,11 +44,11 @@ public class RequestBuilder
         Text, Download, Upload
     }
 
-//    private RequestBuilder()
-//    {
-//        //will not be called from outside
-//        this.url = null;
-//    }
+    private RequestBuilder()
+    {
+        //will not be called from outside
+        this.url = null;
+    }
 
     public RequestBuilder(String url, RequestType type)
     {
@@ -195,18 +197,50 @@ public class RequestBuilder
         return this;
     }
 
+    /**
+     * Set this request as a mock request that will return the given response
+     * @param mockResponse the response to be returned
+     * @return request builder
+     */
+    public RequestBuilder setMocked(String mockResponse)
+    {
+        this.mocked = true;
+        this.mockResponse = mockResponse;
+        return this;
+    }
+
+    /**
+     * Set the download location and filename
+     * @param downloadFile the name of the file to be saved
+     * @return this builder
+     */
     public RequestBuilder setDownloadFile(String downloadFile)
     {
         this.downloadFile = downloadFile;
         return this;
     }
 
+    /**
+     * Set the download file type
+     * 'Automatic' : set the type from the response headers
+     * 'Base64toPdf' : convert the base64 response into a pdf file and save
+     * 'Base64toJpg' : convert the base64 response into a jpeg and save
+     * @param type download file type
+     * @return this builder
+     */
     public RequestBuilder setDownloadFileType(Velocity.DownloadType type)
     {
         this.downloadType = type;
         return this;
     }
 
+    /**
+     * set the details of the file to be uploaded
+     * @param paramName form parameter name(or field) corresponding to this file (eg: "profile-picture" or "id-scan" etc)
+     * @param mimeType mime type of the file. eg: "text/plain" , "image/jpeg" or "video/mp4"
+     * @param uploadFile path to the file to be uploaded
+     * @return RequestBuilder
+     */
     public RequestBuilder setUploadSource(String paramName, String mimeType, String uploadFile)
     {
         this.uploadMimeType = mimeType;
@@ -215,6 +249,11 @@ public class RequestBuilder
         return this;
     }
 
+    /**
+     *
+     * @see RequestBuilder#setUploadSource(String, String, String)
+     * @param uploadStream an open file as an {@link InputStream}
+     */
     public RequestBuilder setUploadSource(String paramName, String mimeType, InputStream uploadStream)
     {
         this.uploadMimeType = mimeType;
@@ -223,6 +262,13 @@ public class RequestBuilder
         return this;
     }
 
+    /**
+     * Add downloaded file to the system Downloads Ui
+     * @param context calling context
+     * @param title title to be displayed in Downloads
+     * @param description description of the downloaded file to be displayed in Downloads
+     * @return RequestBuilder
+     */
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
     public RequestBuilder addToDownloadsFolder(Context context, String title, String description)
     {
@@ -276,12 +322,19 @@ public class RequestBuilder
     }
 
 
+    /**
+     * Add the calling RequestBuilder to the request queue
+     * @param requestId identifier of the request
+     */
     public void queue(int requestId)
     {
         this.requestId = requestId;
 
         MultiResponseHandler.addToQueue(this);
     }
+
+
+
 
     private Request resolveRequest()
     {

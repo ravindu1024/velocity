@@ -90,6 +90,7 @@ public class Velocity
     }
 
 
+
     public enum DownloadType
     {
         Automatic, Base64toPdf, Base64toJpg
@@ -145,6 +146,7 @@ public class Velocity
     {
         static int TIMEOUT = 10000;
         static int READ_TIMEOUT = 30000;
+        static int MOCK_RESPONSE_TIME = 1000;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -199,6 +201,16 @@ public class Velocity
         {
             NetLog.d("set max transfer buffer size: " + bufferSize);
             MAX_BUFFER = bufferSize;
+        }
+
+        /**
+         * Set the global response time for mocked api calls
+         * @param waitTime response time
+         */
+        public void setMockResponseTime(int waitTime)
+        {
+            NetLog.d("Set mock response delay to: "+waitTime);
+            MOCK_RESPONSE_TIME = waitTime;
         }
     }
 

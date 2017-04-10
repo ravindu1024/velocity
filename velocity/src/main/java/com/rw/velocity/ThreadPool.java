@@ -93,7 +93,7 @@ class ThreadPool
             else
                 lastThread++;
 
-            Log.d("IMG", "selecting http threadpool thread: " + lastThread);
+            NetLog.d("selecting http threadpool thread: " + lastThread);
 
             mHandlers.get(lastThread).post(r);
         }
