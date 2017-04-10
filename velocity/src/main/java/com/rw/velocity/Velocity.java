@@ -100,7 +100,6 @@ public class Velocity
     {
         @NonNull
         public final String body;
-        @NonNull
         public final Map<String, List<String>> responseHeaders;
         @Nullable
         public final Bitmap image;
@@ -109,14 +108,21 @@ public class Velocity
         public final int responseCode;
         public final int requestId;
 
-        Response(int requestId, @NonNull String body, int status, @NonNull Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
+        Response(int requestId, @NonNull String body, int status, @Nullable Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
         {
             this.requestId = requestId;
             this.body = body;
             this.responseCode = status;
-            this.responseHeaders = responseHeaders;
             this.image = image;
             this.userData = userData;
+
+            if(responseHeaders == null)
+            {
+                this.responseHeaders = new HashMap<>();
+                this.responseHeaders.put("header-error", new ArrayList<String>());
+            }
+            else
+                this.responseHeaders = responseHeaders;
         }
 
     }

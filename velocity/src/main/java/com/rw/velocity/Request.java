@@ -261,13 +261,10 @@ class Request
 
     private void returnMockResponse()
     {
-        Map<String, List<String>> map = new HashMap<>();
-        map.put("mock-response", new ArrayList<String>());
-
         final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
                 mBuilder.mockResponse,
                 200,
-                map,
+                null,
                 null,
                 mBuilder.userData);
 
@@ -293,7 +290,7 @@ class Request
         final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
                 mResponse.toString(),
                 mResponseCode,
-                mConnection.getHeaderFields(),
+                (mConnection == null) ? null : mConnection.getHeaderFields(),
                 mResponseImage,
                 mBuilder.userData);
 
