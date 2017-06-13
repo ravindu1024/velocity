@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         Velocity.getSettings().setReadTimeout(10000);
         Velocity.getSettings().setMultipartBoundary("----WebKitFormBoundaryQHJL2hsKnlU26Mm3");
         Velocity.getSettings().setMaxTransferBufferSize(1024);
-        Velocity.getSettings().setMockResponseTime(500);
+        Velocity.getSettings().setGloballyMocked(true);
 
 
         progressDialog = new ProgressDialog(this);

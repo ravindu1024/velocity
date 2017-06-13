@@ -150,9 +150,10 @@ public class Velocity
 
     public static class Settings
     {
-        static int TIMEOUT = 10000;
+        static int TIMEOUT = 15000;
         static int READ_TIMEOUT = 30000;
         static int MOCK_RESPONSE_TIME = 1000;
+        static boolean GLOBAL_MOCK = false;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -217,6 +218,12 @@ public class Velocity
         {
             NetLog.d("Set mock response delay to: "+waitTime);
             MOCK_RESPONSE_TIME = waitTime;
+        }
+
+        public void setGloballyMocked(boolean mocked)
+        {
+            NetLog.d("set global mock : " + mocked);
+            GLOBAL_MOCK = mocked;
         }
     }
 

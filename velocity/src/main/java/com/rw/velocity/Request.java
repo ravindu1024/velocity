@@ -56,7 +56,7 @@ class Request
     {
         long t = SystemClock.elapsedRealtime();
 
-        if(mBuilder.mocked)
+        if(mBuilder.mocked || Velocity.Settings.GLOBAL_MOCK)
         {
             try
             {

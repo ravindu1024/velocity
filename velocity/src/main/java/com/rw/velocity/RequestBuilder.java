@@ -35,7 +35,7 @@ public class RequestBuilder
     final String url;
     Velocity.ProgressListener progressListener;
     boolean mocked = false;
-    String mockResponse = "";
+    String mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
 
     private RequestType requestType = RequestType.Text;
 
