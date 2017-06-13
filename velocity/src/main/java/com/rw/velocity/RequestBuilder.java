@@ -369,7 +369,6 @@ public class RequestBuilder
     public void queue(int requestId)
     {
         this.requestId = requestId;
-        this.url += getPathParams();
 
         MultiResponseHandler.addToQueue(this);
     }

@@ -210,7 +210,7 @@ class Request
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
             {
 
-                if (mConnection.getContentType().startsWith("image"))
+                if (mConnection.getContentType() != null && mConnection.getContentType().startsWith("image"))
                 {
                     mResponseImage = BitmapFactory.decodeStream(mConnection.getInputStream());
                     mResponse.append(mConnection.getContentType());
