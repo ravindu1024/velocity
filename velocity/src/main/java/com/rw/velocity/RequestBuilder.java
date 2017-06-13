@@ -18,6 +18,7 @@ public class RequestBuilder
 {
     HashMap<String, String> headers = new HashMap<>();
     HashMap<String, String> params = new HashMap<>();
+    HashMap<String, String> pathParams = new HashMap<>();
     String rawParams;
     String requestMethod = "GET";
     Object userData;
@@ -32,7 +33,7 @@ public class RequestBuilder
     Context context;
     int requestId = 0;
     Velocity.ResponseListener callback;
-    final String url;
+    String url;
     Velocity.ProgressListener progressListener;
     boolean mocked = false;
     String mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
@@ -78,6 +79,30 @@ public class RequestBuilder
     public RequestBuilder withHeader(String key, String value)
     {
         this.headers.put(key, value);
+        return this;
+    }
+
+    /**
+     * Add a single path encoded parameter
+     * @param key path parameter key
+     * @param value path parameter value
+     * @return request builder
+     */
+    public RequestBuilder withPathParam(String key, String value)
+    {
+        this.pathParams.put(key, value);
+        return this;
+    }
+
+
+    /**
+     * Add a list of path parameters
+     * @param pathParams map containing path parameters and key values
+     * @return request builder
+     */
+    public RequestBuilder withPathParams(HashMap<String, String> pathParams)
+    {
+        this.pathParams.putAll(pathParams);
         return this;
     }
 
@@ -128,8 +153,21 @@ public class RequestBuilder
      * @param key   param key
      * @param value param value
      * @return request Builder
+     * @deprecated Please use {@link RequestBuilder#withFormData(String, String)} instead
      */
     public RequestBuilder withParam(String key, String value)
+    {
+        this.params.put(key, value);
+        return this;
+    }
+
+    /**
+     * Add a key value pair as encoded form data
+     * @param key parameter key
+     * @param value parameter value
+     * @return request builder
+     */
+    public RequestBuilder withFormData(String key, String value)
     {
         this.params.put(key, value);
         return this;
@@ -302,6 +340,7 @@ public class RequestBuilder
     public void connect(Velocity.ResponseListener callback)
     {
         this.callback = callback;
+        this.url += getPathParams();
 
         ThreadPool.getThreadPool().postRequest(resolveRequest());
     }
@@ -317,6 +356,7 @@ public class RequestBuilder
     {
         this.requestId = requestId;
         this.callback = callback;
+        this.url += getPathParams();
 
         ThreadPool.getThreadPool().postRequest(resolveRequest());
     }
@@ -329,11 +369,31 @@ public class RequestBuilder
     public void queue(int requestId)
     {
         this.requestId = requestId;
+        this.url += getPathParams();
 
         MultiResponseHandler.addToQueue(this);
     }
 
 
+    private String getPathParams()
+    {
+        String path = "";
+
+        if(!pathParams.isEmpty())
+        {
+            for(String key : pathParams.keySet())
+            {
+                String value = pathParams.get(key);
+
+                path += "&" + key + "=" + value;
+            }
+        }
+
+        if(path.startsWith("&"))
+            path = "?" + path.substring(1);
+
+        return path;
+    }
 
 
     private Request resolveRequest()

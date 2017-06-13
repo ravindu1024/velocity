@@ -163,6 +163,8 @@ class Request
         return params.toString();
     }
 
+
+
     private boolean initializeConnection()
     {
         boolean ret;
