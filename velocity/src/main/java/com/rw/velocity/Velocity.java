@@ -154,6 +154,7 @@ public class Velocity
         static int READ_TIMEOUT = 30000;
         static int MOCK_RESPONSE_TIME = 1000;
         static boolean GLOBAL_MOCK = false;
+        static int GLOBAL_NETWORK_DELAY = 0;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -224,6 +225,16 @@ public class Velocity
         {
             NetLog.d("set global mock : " + mocked);
             GLOBAL_MOCK = mocked;
+        }
+
+        /**
+         * Set the global network simulation delay
+         * @param delay delay in milliseconds
+         */
+        public void setGlobalNetworkDelay(int delay)
+        {
+            NetLog.d("set global network delay: " + delay);
+            GLOBAL_NETWORK_DELAY = delay;
         }
     }
 

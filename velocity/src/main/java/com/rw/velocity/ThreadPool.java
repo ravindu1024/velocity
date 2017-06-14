@@ -74,8 +74,7 @@ class ThreadPool
         }
     }
 
-
-    void postRequest(final Request request)
+    void postRequestDelayed(final Request request, int delay)
     {
         Runnable r = new Runnable()
         {
@@ -95,9 +94,17 @@ class ThreadPool
 
             NetLog.d("selecting http threadpool thread: " + lastThread);
 
-            mHandlers.get(lastThread).post(r);
+            if(delay > 0)
+                mHandlers.get(lastThread).postDelayed(r, delay);
+            else
+                mHandlers.get(lastThread).post(r);
         }
     }
+
+//    void postRequest(final Request request)
+//    {
+//        postRequestDelayed(request, 0);
+//    }
 
     void postToUiThread(Runnable r)
     {

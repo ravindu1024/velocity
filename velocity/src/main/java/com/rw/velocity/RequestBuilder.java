@@ -342,7 +342,7 @@ public class RequestBuilder
         this.callback = callback;
         this.url += getPathParams();
 
-        ThreadPool.getThreadPool().postRequest(resolveRequest());
+        ThreadPool.getThreadPool().postRequestDelayed(resolveRequest(), Velocity.Settings.GLOBAL_NETWORK_DELAY);
     }
 
     /**
@@ -358,7 +358,7 @@ public class RequestBuilder
         this.callback = callback;
         this.url += getPathParams();
 
-        ThreadPool.getThreadPool().postRequest(resolveRequest());
+        ThreadPool.getThreadPool().postRequestDelayed(resolveRequest(), Velocity.Settings.GLOBAL_NETWORK_DELAY);
     }
 
 
