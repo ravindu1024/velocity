@@ -171,24 +171,17 @@ class Request
 
         try
         {
-            URL url = new URL(mBuilder.url);
+            mResponseCode = makeConnection();
 
-            if (url.getProtocol().equalsIgnoreCase("https"))
-                mConnection = (HttpsURLConnection) url.openConnection();
-            else
-                mConnection = (HttpURLConnection) url.openConnection();
+            int count = 0;
+            while((mResponseCode == HttpURLConnection.HTTP_MOVED_PERM || mResponseCode == HttpURLConnection.HTTP_MOVED_TEMP) && count < Velocity.Settings.MAX_REDIRECTS)
+            {
+                count++;
+                mBuilder.url = mConnection.getHeaderField("Location");
+                NetLog.d("redirected : " + mBuilder.url);
 
-            mConnection.setRequestMethod(mBuilder.requestMethod);
-            mConnection.setConnectTimeout(Velocity.Settings.TIMEOUT);
-            mConnection.setReadTimeout(Velocity.Settings.READ_TIMEOUT);
-
-            setupRequestHeaders();
-
-            setupRequestBody();
-
-            mConnection.connect();
-
-            mResponseCode = mConnection.getResponseCode();
+                mResponseCode = makeConnection();
+            }
 
             ret = true;
         }
@@ -199,6 +192,28 @@ class Request
         }
 
         return ret;
+    }
+
+    private int makeConnection() throws IOException
+    {
+        URL url = new URL(mBuilder.url);
+
+        if (url.getProtocol().equalsIgnoreCase("https"))
+            mConnection = (HttpsURLConnection) url.openConnection();
+        else
+            mConnection = (HttpURLConnection) url.openConnection();
+
+        mConnection.setRequestMethod(mBuilder.requestMethod);
+        mConnection.setConnectTimeout(Velocity.Settings.TIMEOUT);
+        mConnection.setReadTimeout(Velocity.Settings.READ_TIMEOUT);
+
+        setupRequestHeaders();
+
+        setupRequestBody();
+
+        mConnection.connect();
+
+        return mConnection.getResponseCode();
     }
 
     boolean readResponse()

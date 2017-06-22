@@ -92,7 +92,6 @@ class ThreadPool
             else
                 lastThread++;
 
-            NetLog.d("selecting http threadpool thread: " + lastThread);
 
             if(delay > 0)
                 mHandlers.get(lastThread).postDelayed(r, delay);

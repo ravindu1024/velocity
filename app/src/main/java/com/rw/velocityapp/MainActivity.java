@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     private String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
     private String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
     private String sushi = "https://s3-ap-southeast-2.amazonaws.com/platform.cdn/clients/dev/filemanager/root/157e4ce754803c1.94820022_Tempura%20Soba.jpg?response-content-disposition=attachment%3B%20filename%3D%22Tempura%20Soba.jpg%22&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWZTEEFKHKIKCC3A%2F20161228%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20161228T065659Z&X-Amz-SignedHeaders=host&X-Amz-Expires=5400&X-Amz-Signature=651830960fab463cd9fcc9345a3e47cac2181fe0cad793e2785bb1af7c7fae2d";
-    private String textUrl = "jj;j;lkj";
+    private String textUrl = "https://www.google.com";
 
 
     @Override
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         Velocity.getSettings().setReadTimeout(10000);
         Velocity.getSettings().setMultipartBoundary("----WebKitFormBoundaryQHJL2hsKnlU26Mm3");
         Velocity.getSettings().setMaxTransferBufferSize(1024);
-        Velocity.getSettings().setGloballyMocked(true);
+        //Velocity.getSettings().setGloballyMocked(true);
+        Velocity.getSettings().setMaxRedirects(10);
 
 
         progressDialog = new ProgressDialog(this);
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                textUrl = "http://easyweddings.com.au/pro-education/feed";
                 textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();

@@ -155,6 +155,7 @@ public class Velocity
         static int MOCK_RESPONSE_TIME = 1000;
         static boolean GLOBAL_MOCK = false;
         static int GLOBAL_NETWORK_DELAY = 0;
+        static int MAX_REDIRECTS = 10;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -235,6 +236,12 @@ public class Velocity
         {
             NetLog.d("set global network delay: " + delay);
             GLOBAL_NETWORK_DELAY = delay;
+        }
+
+        public void setMaxRedirects(int redirects)
+        {
+            NetLog.d("Set max redirects: " + redirects);
+            MAX_REDIRECTS = redirects;
         }
     }
 
