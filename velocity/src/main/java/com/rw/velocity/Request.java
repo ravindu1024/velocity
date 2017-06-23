@@ -283,7 +283,8 @@ class Request
                 200,
                 null,
                 null,
-                mBuilder.userData);
+                mBuilder.userData,
+                mBuilder.url);
 
         Runnable r = new Runnable()
         {
@@ -309,7 +310,8 @@ class Request
                 mResponseCode,
                 (mConnection == null) ? null : mConnection.getHeaderFields(),
                 mResponseImage,
-                mBuilder.userData);
+                mBuilder.userData,
+                mBuilder.url);
 
         Runnable r = new Runnable()
         {

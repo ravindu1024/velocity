@@ -3,6 +3,7 @@ package com.rw.velocity;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,14 +108,17 @@ public class Velocity
         public final Object userData;
         public final int responseCode;
         public final int requestId;
+        @NonNull
+        public final String requestUrl;
 
-        Response(int requestId, @NonNull String body, int status, @Nullable Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData)
+        Response(int requestId, @NonNull String body, int status, @Nullable Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData, @NonNull String url)
         {
             this.requestId = requestId;
             this.body = body;
             this.responseCode = status;
             this.image = image;
             this.userData = userData;
+            this.requestUrl = url;
 
             if(responseHeaders == null)
             {
