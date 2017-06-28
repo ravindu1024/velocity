@@ -9,12 +9,11 @@ package com.rw.velocity;
 
 class NetLog
 {
-    private final static boolean ENABLED = true;
     private final static String TAG = "Velocity";
 
     static void d(String message)
     {
-        if (ENABLED)
+        if (Velocity.Settings.LOGS_ENABLED)
             android.util.Log.d(TAG, message);
     }
 }

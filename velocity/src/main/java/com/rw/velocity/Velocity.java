@@ -160,6 +160,7 @@ public class Velocity
         static boolean GLOBAL_MOCK = false;
         static int GLOBAL_NETWORK_DELAY = 0;
         static int MAX_REDIRECTS = 10;
+        static boolean LOGS_ENABLED = false;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -246,6 +247,12 @@ public class Velocity
         {
             NetLog.d("Set max redirects: " + redirects);
             MAX_REDIRECTS = redirects;
+        }
+
+        public void setLoggingEnabled(boolean enabled)
+        {
+            android.util.Log.d("Velocity", "Log enabled: " + enabled);
+            LOGS_ENABLED = enabled;
         }
     }
 
