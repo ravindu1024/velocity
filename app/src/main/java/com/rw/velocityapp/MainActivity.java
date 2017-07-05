@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rw.velocity.OAuthHandler;
 import com.rw.velocity.RequestBuilder;
 import com.rw.velocity.Velocity;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
         Velocity.getSettings().setMaxTransferBufferSize(1024);
         //Velocity.getSettings().setGloballyMocked(true);
         Velocity.getSettings().setMaxRedirects(10);
+        Velocity.getSettings().setLoggingEnabled(true);
 
 
         progressDialog = new ProgressDialog(this);
@@ -61,9 +63,31 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 textUrl = "http://easyweddings.com.au/pro-education/feed";
-                textRequest(textUrl);
+                //textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
+
+
+                OAuthHandler.login("https://test.ewauth.com:9943/identity/connect/token")
+                        .withUsername("acc-64@easyweddings.com.au")
+                        .withPassword("dev")
+                        .withClient("crm-apps-ropf-001", "crm-apps-ropf-cd71b68d-d788-40ac-9c60-0e769820e5cc")
+                        .withGrantType(OAuthHandler.GrantType.password)
+                        .withScope("openid")
+                        .init(new OAuthHandler.OAuthListener()
+                        {
+                            @Override
+                            public void onOAuthToken(String token)
+                            {
+                                Log.d("IMG", "got token: " + token);
+                            }
+
+                            @Override
+                            public void onOAuthError(String error)
+                            {
+                                Log.d("IMG", "token error: " + error);
+                            }
+                        });
             }
         });
 

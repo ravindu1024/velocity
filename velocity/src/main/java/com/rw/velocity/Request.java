@@ -102,6 +102,9 @@ class Request
     {
         mConnection.setRequestProperty("User-Agent", "velocity-android-http-client");
 
+        if(mBuilder.contentType != null)
+            mConnection.setRequestProperty("Content-Type", mBuilder.contentType.toString());
+
         if (!mBuilder.headers.isEmpty())
         {
             for (String key : mBuilder.headers.keySet())

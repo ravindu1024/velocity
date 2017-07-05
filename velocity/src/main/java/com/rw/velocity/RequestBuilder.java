@@ -32,6 +32,7 @@ public class RequestBuilder
     String downloadUiDescr = "";
     Context context;
     int requestId = 0;
+    ContentType contentType;
     Velocity.ResponseListener callback;
     String url;
     Velocity.ProgressListener progressListener;
@@ -43,6 +44,25 @@ public class RequestBuilder
     enum RequestType
     {
         Text, Download, Upload
+    }
+
+    public enum ContentType {
+        FORM_DATA("application/form-data"),
+        FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
+        JASON("application/json"),
+        TEXT(null),
+        TEXT_PLAIN("application/text/plain");
+
+        private final String text;
+
+        private ContentType(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
     }
 
     private RequestBuilder()
@@ -115,12 +135,12 @@ public class RequestBuilder
     public RequestBuilder withBody(HashMap<String, String> params)
     {
         this.params.putAll(params);
+        this.contentType = ContentType.FORM_DATA;
         return this;
     }
 
     /**
-     * Add HTTP params as a String (raw ot JSON string). "Content type" will be set to
-     * "application/json" by default when calling this method
+     * Add HTTP params as a String (raw ot JSON string). "Content type" will not be set in request headers.
      *
      * @param params raw parameter String
      * @return request builder
@@ -128,7 +148,7 @@ public class RequestBuilder
     public RequestBuilder withBody(String params)
     {
         this.rawParams = params;
-        this.headers.put("Content-Type", "application/json");
+        this.contentType = ContentType.TEXT;
         return this;
     }
 
@@ -137,29 +157,30 @@ public class RequestBuilder
      * the parameter type for the call
      *
      * @param params    raw parameter String
-     * @param paramType eg: "application/json" or "text/xml"
+     * @param paramType from {@link ContentType} or custom like "application/json" or "text/xml"
      * @return request builder
      */
-    public RequestBuilder withBody(String params, String paramType)
+    public RequestBuilder withBody(String params, ContentType paramType)
     {
         this.rawParams = params;
-        this.headers.put("Content-Type", paramType);
+        this.contentType = paramType;
         return this;
     }
 
-    /**
-     * Add a single HTTP parameter
-     *
-     * @param key   param key
-     * @param value param value
-     * @return request Builder
-     * @deprecated Please use {@link RequestBuilder#withFormData(String, String)} instead
-     */
-    public RequestBuilder withParam(String key, String value)
-    {
-        this.params.put(key, value);
-        return this;
-    }
+//    /**
+//     * Add a single HTTP parameter
+//
+//     * @param key   param key
+//     * @param value param value
+//     * @return request Builder
+//     * @deprecated Please use {@link RequestBuilder#withFormData(String, String)} instead
+//     */
+//    public RequestBuilder withParam(String key, String value)
+//    {
+//        this.params.put(key, value);
+//        this.contentType = Velocity.ContentType.FORM_DATA;
+//        return this;
+//    }
 
     /**
      * Add a key value pair as encoded form data
@@ -170,6 +191,13 @@ public class RequestBuilder
     public RequestBuilder withFormData(String key, String value)
     {
         this.params.put(key, value);
+        this.contentType = ContentType.FORM_DATA;
+        return this;
+    }
+
+    public RequestBuilder withBodyContentType(ContentType contentType)
+    {
+        this.contentType = contentType;
         return this;
     }
 
