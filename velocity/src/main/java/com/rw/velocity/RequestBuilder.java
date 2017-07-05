@@ -49,7 +49,7 @@ public class RequestBuilder
     public enum ContentType {
         FORM_DATA("application/form-data"),
         FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
-        JASON("application/json"),
+        JSON("application/json"),
         TEXT(null),
         TEXT_PLAIN("application/text/plain");
 

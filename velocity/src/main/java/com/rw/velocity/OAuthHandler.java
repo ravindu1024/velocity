@@ -134,7 +134,7 @@ public class OAuthHandler implements Velocity.ResponseListener
                 .withHeader("Authorization", authHeader)
                 .withFormData("password", builder.pass)
                 .withFormData("username", builder.user)
-                .withFormData("grant_type", "password")
+                .withFormData("grant_type", builder.grantType)
                 .withFormData("scope", builder.scope)
                 .withBodyContentType(RequestBuilder.ContentType.FORM_DATA_URLENCODED)
                 .connect(REQUEST_TOKEN, this);

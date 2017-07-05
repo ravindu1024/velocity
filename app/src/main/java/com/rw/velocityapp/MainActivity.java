@@ -66,28 +66,6 @@ public class MainActivity extends AppCompatActivity
                 //textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
-
-
-                OAuthHandler.login("https://test.ewauth.com:9943/identity/connect/token")
-                        .withUsername("acc-64@easyweddings.com.au")
-                        .withPassword("dev")
-                        .withClient("crm-apps-ropf-001", "crm-apps-ropf-cd71b68d-d788-40ac-9c60-0e769820e5cc")
-                        .withGrantType(OAuthHandler.GrantType.password)
-                        .withScope("openid")
-                        .init(new OAuthHandler.OAuthListener()
-                        {
-                            @Override
-                            public void onOAuthToken(String token)
-                            {
-                                Log.d("IMG", "got token: " + token);
-                            }
-
-                            @Override
-                            public void onOAuthError(String error)
-                            {
-                                Log.d("IMG", "token error: " + error);
-                            }
-                        });
             }
         });
 
