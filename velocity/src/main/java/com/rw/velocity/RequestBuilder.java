@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -153,6 +155,19 @@ public class RequestBuilder
     }
 
     /**
+     * Add HTTP body as a json object
+     * @param toJsonObect body
+     * @return this builder
+     */
+    public RequestBuilder withJsonBody(Object toJsonObect)
+    {
+        this.rawParams = new Gson().toJson(toJsonObect);
+        this.contentType = ContentType.JSON;
+
+        return this;
+    }
+
+    /**
      * Add HTTP params as a String and set the content type. This is added as a request header specifying
      * the parameter type for the call
      *
@@ -195,6 +210,11 @@ public class RequestBuilder
         return this;
     }
 
+    /**
+     * Set HTTP body content type
+     * @param contentType select from {@link ContentType}
+     * @return this builder
+     */
     public RequestBuilder withBodyContentType(ContentType contentType)
     {
         this.contentType = contentType;
