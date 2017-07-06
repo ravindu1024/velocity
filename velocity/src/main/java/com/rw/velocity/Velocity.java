@@ -85,11 +85,26 @@ public class Velocity
     }
 
 
+    /**
+     * Execute all queued requests. The results is given in a single callback.
+     * @param callback {@link MultiResponseListener} callback
+     */
     public static void executeQueue(MultiResponseListener callback)
     {
         MultiResponseHandler.execute(callback);
     }
 
+
+    /**
+     * This is only partially functional. Right now it only supports the resource owner password flow.
+     *
+     * @param publicUrl token url
+     * @return OAuthBuilder
+     */
+    public static OAuthBuilder loginWithOAuth(String publicUrl)
+    {
+        return new OAuthBuilder(publicUrl);
+    }
 
 
     public enum DownloadType
@@ -149,6 +164,12 @@ public class Velocity
     public interface ProgressListener
     {
         void onFileProgress(int percentage);
+    }
+
+    public interface OAuthListener
+    {
+        void onOAuthToken(String token);
+        void onOAuthError(Velocity.Response error);
     }
 
 

@@ -53,7 +53,12 @@ public class RequestBuilder
         FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
         JSON("application/json"),
         TEXT(null),
-        TEXT_PLAIN("application/text/plain");
+        TEXT_PLAIN("application/text/plain"),
+        XML("application/xml"),
+        TEXT_XML("text/xml"),
+        JAVASCRIPT("application/javascript"),
+        HTML("application/html");
+
 
         private final String text;
 
@@ -129,7 +134,7 @@ public class RequestBuilder
     }
 
     /**
-     * Add HTTP form data as a Hashmap<String, String>
+     * Add HTTP form data as a Hashmap<String, String>. Content type: application/form-data
      *
      * @param params form data
      * @return request builder
@@ -155,7 +160,7 @@ public class RequestBuilder
     }
 
     /**
-     * Add HTTP body as a json object
+     * Add HTTP body as a json object. Content type: application/json
      * @param toJsonObect body
      * @return this builder
      */
@@ -172,7 +177,7 @@ public class RequestBuilder
      * the parameter type for the call
      *
      * @param params    raw parameter String
-     * @param paramType from {@link ContentType} or custom like "application/json" or "text/xml"
+     * @param paramType from {@link ContentType}
      * @return request builder
      */
     public RequestBuilder withBody(String params, ContentType paramType)
@@ -198,7 +203,7 @@ public class RequestBuilder
 //    }
 
     /**
-     * Add a key value pair as encoded form data
+     * Add a key value pair as encoded form data. Content type: application/form-data
      * @param key parameter key
      * @param value parameter value
      * @return request builder
@@ -420,6 +425,8 @@ public class RequestBuilder
 
         MultiResponseHandler.addToQueue(this);
     }
+
+
 
 
     private String getPathParams()

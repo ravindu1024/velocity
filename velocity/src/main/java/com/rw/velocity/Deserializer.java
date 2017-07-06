@@ -80,4 +80,9 @@ public class Deserializer
 
         return deserializeArrayList(j.toString(), cls);
     }
+
+    public String toJson(Object obj)
+    {
+        return new Gson().toJson(obj);
+    }
 }

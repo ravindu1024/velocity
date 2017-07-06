@@ -9,11 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rw.velocity.OAuthHandler;
-import com.rw.velocity.RequestBuilder;
+import com.rw.velocity.OAuthBuilder;
 import com.rw.velocity.Velocity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
@@ -72,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
     private void doMultiRequest()
     {
         String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         Velocity.load(getTestUrl(1)).queue(0);
         Velocity.download(file).setDownloadFile(filepath).queue(1);
         Velocity.load(randomImage).queue(2);
+
 
 
         Velocity.executeQueue(new Velocity.MultiResponseListener()

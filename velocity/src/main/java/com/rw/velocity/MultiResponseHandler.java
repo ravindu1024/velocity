@@ -14,6 +14,7 @@ import java.util.HashMap;
  * Copyright © 2016 Vortilla. All rights reserved.
  */
 
+//TODO : check request id when submitting request - and throw exception
 class MultiResponseHandler implements Velocity.ResponseListener
 {
     private Velocity.MultiResponseListener mCallback;
