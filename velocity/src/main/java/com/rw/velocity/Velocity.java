@@ -3,7 +3,6 @@ package com.rw.velocity;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,18 +47,42 @@ public class Velocity
 
 
     /**
-     * Prepare a builder to make a network call. Http request type will be "GET" by default
-     * Minimum argument call looks like this: Velocity.load(url).connect(callback)
+     * Prepare a builder to make a GET call.
+     * Minimum argument call looks like this: Velocity.get(url).connect(callback)
      * <p>
-     * If the return type is an image, it will be in Velocity.Data.image as a Bitmap
-     * If it is any other type, the reply will be in Velocity.Data.body as raw text
+     * If the return type is an image, it will be in {@link Response#image}
+     * If it is any other type, the reply will be in {@link Response#body} as raw text
      *
      * @param url request address
      * @return request builder
      */
-    public static RequestBuilder load(String url)
+    public static RequestBuilder get(String url)
     {
-        return new RequestBuilder(url, RequestBuilder.RequestType.Text);
+        return new RequestBuilder(url, RequestType.Text).withRequestMethodGet();
+    }
+
+    /**
+     * POST version of {@link Velocity#get(String)}
+     */
+    public static RequestBuilder post(String url)
+    {
+        return new RequestBuilder(url, RequestType.Text).withRequestMethodPost();
+    }
+
+    /**
+     * PUT version of {@link Velocity#get(String)}
+     */
+    public static RequestBuilder put(String url)
+    {
+        return new RequestBuilder(url, RequestType.Text).withRequestMethodPut();
+    }
+
+    /**
+     * DELETE version of {@link Velocity#get(String)}
+     */
+    public static RequestBuilder delete(String url)
+    {
+        return new RequestBuilder(url, RequestType.Text).withRequestMethodDelete();
     }
 
     /**
@@ -70,7 +93,7 @@ public class Velocity
      */
     public static RequestBuilder download(String url)
     {
-        return new RequestBuilder(url, RequestBuilder.RequestType.Download);
+        return new RequestBuilder(url, RequestType.Download);
     }
 
     /**
@@ -81,7 +104,7 @@ public class Velocity
      */
     public static RequestBuilder upload(String url)
     {
-        return new RequestBuilder(url, RequestBuilder.RequestType.Upload);
+        return new RequestBuilder(url, RequestType.Upload);
     }
 
 
@@ -112,6 +135,36 @@ public class Velocity
         Automatic, Base64toPdf, Base64toJpg
     }
 
+    enum RequestType
+    {
+        Text, Download, Upload
+    }
+
+
+    public enum ContentType {
+        FORM_DATA("application/form-data"),
+        FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
+        JSON("application/json"),
+        TEXT(null),
+        TEXT_PLAIN("application/text/plain"),
+        XML("application/xml"),
+        TEXT_XML("text/xml"),
+        JAVASCRIPT("application/javascript"),
+        HTML("application/html");
+
+
+        private final String text;
+
+        ContentType(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
     public static class Response
     {
         @NonNull
@@ -126,14 +179,67 @@ public class Velocity
         @NonNull
         public final String requestUrl;
 
-        Response(int requestId, @NonNull String body, int status, @Nullable Map<String, List<String>> responseHeaders, @Nullable Bitmap image, @Nullable Object userData, @NonNull String url)
+        @Nullable
+        private RequestBuilder builder;
+
+        public<T> T deserialize(Class<T> type)
+        {
+            return new Deserializer().deserialize(body, type);
+        }
+
+        public<T> ArrayList<T> deserializeList(Class<T[]> type)
+        {
+            return new Deserializer().deserializeArrayList(body, type);
+        }
+
+        @Override
+        public String toString()
+        {
+            if(builder == null)
+                return super.toString();
+
+            @SuppressWarnings("StringBufferReplaceableByString")
+            StringBuilder str = new StringBuilder();
+
+            str.append("--------- Request-------------").append("\n");
+            str.append(builder.requestMethod).append(" : ").append(requestUrl).append("\n");
+            str.append("Headers : ").append(builder.headers.size()).append("\n");
+            str.append("Form Data : ").append(builder.params.size()).append("\n");
+            str.append("Path params : ").append(builder.pathParams.size()).append("\n");
+
+
+            str.append("--------- Response-------------").append("\n");
+            str.append(responseCode).append("\n");
+            str.append("Response headeres: ").append("\n");
+            for(String s : responseHeaders.keySet())
+            {
+                str.append(s).append(" : ").append(responseHeaders.get(s)).append("\n");
+            }
+
+            str.append("----------------------------------");
+
+            return str.toString();
+        }
+
+        Response(int requestId,
+                 @NonNull String body,
+                 int status,
+                 @Nullable Map<String, List<String>> responseHeaders,
+                 @Nullable Bitmap image,
+                 @Nullable Object userData,
+                 @Nullable RequestBuilder builder)
         {
             this.requestId = requestId;
             this.body = body;
             this.responseCode = status;
             this.image = image;
             this.userData = userData;
-            this.requestUrl = url;
+            this.builder = builder;
+
+            if(builder != null)
+                this.requestUrl = builder.originUrl;
+            else
+                this.requestUrl = "";
 
             if(responseHeaders == null)
             {

@@ -43,14 +43,13 @@ class OAuthHandler implements Velocity.ResponseListener
             }
 
 
-            Velocity.load(builder.url)
-                    .withRequestMethodPost()
+            Velocity.post(builder.url)
                     .withHeader("Authorization", authHeader)
                     .withFormData("password", builder.pass)
                     .withFormData("username", builder.user)
                     .withFormData("grant_type", builder.grantType)
                     .withFormData("scope", builder.scope)
-                    .withBodyContentType(RequestBuilder.ContentType.FORM_DATA_URLENCODED)
+                    .withBodyContentType(Velocity.ContentType.FORM_DATA_URLENCODED)
                     .connect(REQUEST_TOKEN, this);
         }
         catch (UnsupportedEncodingException ue)
@@ -64,7 +63,7 @@ class OAuthHandler implements Velocity.ResponseListener
     {
         if (builder.callback != null)
         {
-            final Velocity.Response response = new Velocity.Response(0, e.toString(), 0, null, null, null, builder.url);
+            final Velocity.Response response = new Velocity.Response(0, e.toString(), 0, null, null, null, null);
             Runnable r = new Runnable()
             {
                 @Override

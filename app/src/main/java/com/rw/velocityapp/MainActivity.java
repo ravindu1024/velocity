@@ -60,13 +60,22 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                textUrl = "http://easyweddings.com.au/pro-education/feed";
-                //textRequest(textUrl);
+                //textUrl = "http://easyweddings.com.au/pro-education/feed";
+                textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
             }
         });
 
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Velocity.Response r = Velocity.get(textUrl).connectBlocking();
+                Log.d("IMG", "response: " + r.body);
+            }
+        }).start();
     }
 
 
@@ -76,9 +85,9 @@ public class MainActivity extends AppCompatActivity
         String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample2.bin";
 
 
-        Velocity.load(getTestUrl(1)).queue(0);
+        Velocity.get(getTestUrl(1)).queue(0);
         Velocity.download(file).setDownloadFile(filepath).queue(1);
-        Velocity.load(randomImage).queue(2);
+        Velocity.get(randomImage).queue(2);
 
 
 
@@ -137,7 +146,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onVelocitySuccess(Velocity.Response response)
                     {
-                        Log.d("IMG", "response: " + response.body);
+                        //Log.d("IMG", "response: " + response.body);
                         textView.setText(response.body);
                         progressDialog.dismiss();
                     }
@@ -154,7 +163,7 @@ public class MainActivity extends AppCompatActivity
 
     private void textRequest(String url)
     {
-        Velocity.load(url).connect(new Velocity.ResponseListener()
+        Velocity.get(url).connect(new Velocity.ResponseListener()
         {
             @Override
             public void onVelocitySuccess(Velocity.Response response)
@@ -163,6 +172,9 @@ public class MainActivity extends AppCompatActivity
                 textView.setText(response.body);
                 if (response.image != null)
                     imageView.setImageBitmap(response.image);
+
+                Log.d("IMG", "response toString:");
+                Log.d("IMG", response.toString());
             }
 
             @Override

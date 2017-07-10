@@ -2,7 +2,11 @@ package com.rw.velocity;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Looper;
+import android.os.NetworkOnMainThreadException;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.WorkerThread;
 
 import com.google.gson.Gson;
 
@@ -34,53 +38,27 @@ public class RequestBuilder
     String downloadUiDescr = "";
     Context context;
     int requestId = 0;
-    ContentType contentType;
+    Velocity.ContentType contentType;
     Velocity.ResponseListener callback;
     String url;
+    final String originUrl;
     Velocity.ProgressListener progressListener;
     boolean mocked = false;
     String mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
 
-    private RequestType requestType = RequestType.Text;
-
-    enum RequestType
-    {
-        Text, Download, Upload
-    }
-
-    public enum ContentType {
-        FORM_DATA("application/form-data"),
-        FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
-        JSON("application/json"),
-        TEXT(null),
-        TEXT_PLAIN("application/text/plain"),
-        XML("application/xml"),
-        TEXT_XML("text/xml"),
-        JAVASCRIPT("application/javascript"),
-        HTML("application/html");
-
-
-        private final String text;
-
-        private ContentType(final String text) {
-            this.text = text;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
-    }
+    private Velocity.RequestType requestType = Velocity.RequestType.Text;
 
     private RequestBuilder()
     {
         //will not be called from outside
         this.url = null;
+        this.originUrl = null;
     }
 
-    public RequestBuilder(String url, RequestType type)
+    public RequestBuilder(String url, Velocity.RequestType type)
     {
         this.url = url;
+        this.originUrl = url;
         this.requestType = type;
     }
 
@@ -142,7 +120,7 @@ public class RequestBuilder
     public RequestBuilder withBody(HashMap<String, String> params)
     {
         this.params.putAll(params);
-        this.contentType = ContentType.FORM_DATA;
+        this.contentType = Velocity.ContentType.FORM_DATA;
         return this;
     }
 
@@ -155,7 +133,7 @@ public class RequestBuilder
     public RequestBuilder withBody(String params)
     {
         this.rawParams = params;
-        this.contentType = ContentType.TEXT;
+        this.contentType = Velocity.ContentType.TEXT;
         return this;
     }
 
@@ -167,7 +145,7 @@ public class RequestBuilder
     public RequestBuilder withJsonBody(Object toJsonObect)
     {
         this.rawParams = new Gson().toJson(toJsonObect);
-        this.contentType = ContentType.JSON;
+        this.contentType = Velocity.ContentType.JSON;
 
         return this;
     }
@@ -177,10 +155,10 @@ public class RequestBuilder
      * the parameter type for the call
      *
      * @param params    raw parameter String
-     * @param paramType from {@link ContentType}
+     * @param paramType from {@link Velocity.ContentType}
      * @return request builder
      */
-    public RequestBuilder withBody(String params, ContentType paramType)
+    public RequestBuilder withBody(String params, Velocity.ContentType paramType)
     {
         this.rawParams = params;
         this.contentType = paramType;
@@ -211,16 +189,16 @@ public class RequestBuilder
     public RequestBuilder withFormData(String key, String value)
     {
         this.params.put(key, value);
-        this.contentType = ContentType.FORM_DATA;
+        this.contentType = Velocity.ContentType.FORM_DATA;
         return this;
     }
 
     /**
      * Set HTTP body content type
-     * @param contentType select from {@link ContentType}
+     * @param contentType select from {@link Velocity.ContentType}
      * @return this builder
      */
-    public RequestBuilder withBodyContentType(ContentType contentType)
+    public RequestBuilder withBodyContentType(Velocity.ContentType contentType)
     {
         this.contentType = contentType;
         return this;
@@ -426,6 +404,16 @@ public class RequestBuilder
         MultiResponseHandler.addToQueue(this);
     }
 
+    @WorkerThread
+    public Velocity.Response connectBlocking()
+    {
+        if(Looper.myLooper() == Looper.getMainLooper())
+            throw new NetworkOnMainThreadException();
+
+        return new SynchronousWrapper().connect(this);
+    }
+
+
 
 
 
@@ -453,9 +441,9 @@ public class RequestBuilder
     private Request resolveRequest()
     {
         Request request;
-        if (requestType == RequestType.Download)
+        if (requestType == Velocity.RequestType.Download)
             request = new DownloadRequest(this);
-        else if (requestType == RequestType.Upload)
+        else if (requestType == Velocity.RequestType.Upload)
             request = new UploadRequest(this);
         else
             request = new Request(this);
