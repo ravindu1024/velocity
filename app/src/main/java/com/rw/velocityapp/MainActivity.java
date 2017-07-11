@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity
                 //textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
-
-
             }
         });
 
@@ -80,6 +78,13 @@ public class MainActivity extends AppCompatActivity
 //        }).start();
     }
 
+    class Survey
+    {
+        String guest_id = "492";
+        String survey_id = "1";
+
+
+    }
 
 
     private void doMultiRequest()

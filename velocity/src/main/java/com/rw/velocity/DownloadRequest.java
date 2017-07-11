@@ -3,7 +3,6 @@ package com.rw.velocity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
