@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.WorkerThread;
 
@@ -38,7 +37,7 @@ public class RequestBuilder
     String downloadUiDescr = "";
     Context context;
     int requestId = 0;
-    Velocity.ContentType contentType;
+    String contentType;
     Velocity.ResponseListener callback;
     String url;
     final String originUrl;
@@ -112,7 +111,7 @@ public class RequestBuilder
     }
 
     /**
-     * Add HTTP form data as a Hashmap<String, String>. Content type: application/form-data
+     * Add HTTP form data as a Hashmap<String, String>. Content type: application/x-www-form-urlencoded-data
      *
      * @param params form data
      * @return request builder
@@ -120,7 +119,7 @@ public class RequestBuilder
     public RequestBuilder withBody(HashMap<String, String> params)
     {
         this.params.putAll(params);
-        this.contentType = Velocity.ContentType.FORM_DATA;
+        this.contentType = Velocity.ContentType.FORM_DATA_URLENCODED.toString();
         return this;
     }
 
@@ -133,7 +132,7 @@ public class RequestBuilder
     public RequestBuilder withBody(String params)
     {
         this.rawParams = params;
-        this.contentType = Velocity.ContentType.TEXT;
+        this.contentType = Velocity.ContentType.TEXT.toString();
         return this;
     }
 
@@ -145,7 +144,7 @@ public class RequestBuilder
     public RequestBuilder withJsonBody(Object toJsonObect)
     {
         this.rawParams = new Gson().toJson(toJsonObect);
-        this.contentType = Velocity.ContentType.JSON;
+        this.contentType = Velocity.ContentType.JSON.toString();
 
         return this;
     }
@@ -161,27 +160,13 @@ public class RequestBuilder
     public RequestBuilder withBody(String params, Velocity.ContentType paramType)
     {
         this.rawParams = params;
-        this.contentType = paramType;
+        this.contentType = paramType.toString();
         return this;
     }
 
-//    /**
-//     * Add a single HTTP parameter
-//
-//     * @param key   param key
-//     * @param value param value
-//     * @return request Builder
-//     * @deprecated Please use {@link RequestBuilder#withFormData(String, String)} instead
-//     */
-//    public RequestBuilder withParam(String key, String value)
-//    {
-//        this.params.put(key, value);
-//        this.contentType = Velocity.ContentType.FORM_DATA;
-//        return this;
-//    }
 
     /**
-     * Add a key value pair as encoded form data. Content type: application/form-data
+     * Add a key value pair as encoded form data. Content type: application/form-x-www-form-urlencoded
      * @param key parameter key
      * @param value parameter value
      * @return request builder
@@ -189,7 +174,7 @@ public class RequestBuilder
     public RequestBuilder withFormData(String key, String value)
     {
         this.params.put(key, value);
-        this.contentType = Velocity.ContentType.FORM_DATA;
+        this.contentType = Velocity.ContentType.FORM_DATA_URLENCODED.toString();
         return this;
     }
 
@@ -200,53 +185,10 @@ public class RequestBuilder
      */
     public RequestBuilder withBodyContentType(Velocity.ContentType contentType)
     {
-        this.contentType = contentType;
+        this.contentType = contentType.toString();
         return this;
     }
 
-    /**
-     * Set the http request method as GET
-     *
-     * @return request builder
-     */
-    public RequestBuilder withRequestMethodGet()
-    {
-        this.requestMethod = "GET";
-        return this;
-    }
-
-    /**
-     * Set the http request method as POST
-     *
-     * @return request builder
-     */
-    public RequestBuilder withRequestMethodPost()
-    {
-        this.requestMethod = "POST";
-        return this;
-    }
-
-    /**
-     * Set the http request method as PUT
-     *
-     * @return request builder
-     */
-    public RequestBuilder withRequestMethodPut()
-    {
-        this.requestMethod = "PUT";
-        return this;
-    }
-
-    /**
-     * Set the http request method as DELETE
-     *
-     * @return request builder
-     */
-    public RequestBuilder withRequestMethodDelete()
-    {
-        this.requestMethod = "DELETE";
-        return this;
-    }
 
     public RequestBuilder withRequestMethod(String method)
     {

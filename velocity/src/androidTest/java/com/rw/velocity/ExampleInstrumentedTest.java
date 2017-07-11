@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest
 {
+    private static String BASE_URL = "https://jsonplaceholder.typicode.com";
+
     @Test
     public void useAppContext() throws Exception
     {
@@ -24,5 +26,12 @@ public class ExampleInstrumentedTest
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.rw.velocity.test", appContext.getPackageName());
+    }
+
+    @Test
+    public void get() throws Exception
+    {
+
+
     }
 }

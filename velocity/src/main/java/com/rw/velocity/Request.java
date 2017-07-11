@@ -17,10 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -102,8 +98,9 @@ class Request
     {
         mConnection.setRequestProperty("User-Agent", "velocity-android-http-client");
 
-        if(mBuilder.contentType != null)
-            mConnection.setRequestProperty("Content-Type", mBuilder.contentType.toString());
+        if(mBuilder.contentType != null && mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.TEXT.toString()))
+            mConnection.setRequestProperty("Content-Type", mBuilder.contentType);
+
 
         if (!mBuilder.headers.isEmpty())
         {

@@ -58,7 +58,7 @@ public class Velocity
      */
     public static RequestBuilder get(String url)
     {
-        return new RequestBuilder(url, RequestType.Text).withRequestMethodGet();
+        return new RequestBuilder(url, RequestType.Text).withRequestMethod("GET");
     }
 
     /**
@@ -66,7 +66,7 @@ public class Velocity
      */
     public static RequestBuilder post(String url)
     {
-        return new RequestBuilder(url, RequestType.Text).withRequestMethodPost();
+        return new RequestBuilder(url, RequestType.Text).withRequestMethod("POST");
     }
 
     /**
@@ -74,7 +74,7 @@ public class Velocity
      */
     public static RequestBuilder put(String url)
     {
-        return new RequestBuilder(url, RequestType.Text).withRequestMethodPut();
+        return new RequestBuilder(url, RequestType.Text).withRequestMethod("PUT");
     }
 
     /**
@@ -82,7 +82,7 @@ public class Velocity
      */
     public static RequestBuilder delete(String url)
     {
-        return new RequestBuilder(url, RequestType.Text).withRequestMethodDelete();
+        return new RequestBuilder(url, RequestType.Text).withRequestMethod("DELETE");
     }
 
     /**
@@ -110,6 +110,7 @@ public class Velocity
 
     /**
      * Execute all queued requests. The results is given in a single callback.
+     *
      * @param callback {@link MultiResponseListener} callback
      */
     public static void executeQueue(MultiResponseListener callback)
@@ -141,8 +142,8 @@ public class Velocity
     }
 
 
-    public enum ContentType {
-        FORM_DATA("application/form-data"),
+    public enum ContentType
+    {
         FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
         JSON("application/json"),
         TEXT(null),
@@ -155,12 +156,14 @@ public class Velocity
 
         private final String text;
 
-        ContentType(final String text) {
+        ContentType(final String text)
+        {
             this.text = text;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return text;
         }
     }
@@ -182,12 +185,12 @@ public class Velocity
         @Nullable
         private RequestBuilder builder;
 
-        public<T> T deserialize(Class<T> type)
+        public <T> T deserialize(Class<T> type)
         {
             return new Deserializer().deserialize(body, type);
         }
 
-        public<T> ArrayList<T> deserializeList(Class<T[]> type)
+        public <T> ArrayList<T> deserializeList(Class<T[]> type)
         {
             return new Deserializer().deserializeArrayList(body, type);
         }
@@ -195,7 +198,7 @@ public class Velocity
         @Override
         public String toString()
         {
-            if(builder == null)
+            if (builder == null)
                 return super.toString();
 
             @SuppressWarnings("StringBufferReplaceableByString")
@@ -211,7 +214,7 @@ public class Velocity
             str.append("--------- Response-------------").append("\n");
             str.append(responseCode).append("\n");
             str.append("Response headeres: ").append("\n");
-            for(String s : responseHeaders.keySet())
+            for (String s : responseHeaders.keySet())
             {
                 str.append(s).append(" : ").append(responseHeaders.get(s)).append("\n");
             }
@@ -236,12 +239,12 @@ public class Velocity
             this.userData = userData;
             this.builder = builder;
 
-            if(builder != null)
+            if (builder != null)
                 this.requestUrl = builder.originUrl;
             else
                 this.requestUrl = "";
 
-            if(responseHeaders == null)
+            if (responseHeaders == null)
             {
                 this.responseHeaders = new HashMap<>();
                 this.responseHeaders.put("header-error", new ArrayList<String>());
@@ -275,6 +278,7 @@ public class Velocity
     public interface OAuthListener
     {
         void onOAuthToken(String token);
+
         void onOAuthError(Velocity.Response error);
     }
 
@@ -346,11 +350,12 @@ public class Velocity
 
         /**
          * Set the global response time for mocked api calls
+         *
          * @param waitTime response time
          */
         public void setMockResponseTime(int waitTime)
         {
-            NetLog.d("Set mock response delay to: "+waitTime);
+            NetLog.d("Set mock response delay to: " + waitTime);
             MOCK_RESPONSE_TIME = waitTime;
         }
 
@@ -362,6 +367,7 @@ public class Velocity
 
         /**
          * Set the global network simulation delay
+         *
          * @param delay delay in milliseconds
          */
         public void setGlobalNetworkDelay(int delay)

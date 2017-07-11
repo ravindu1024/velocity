@@ -61,21 +61,23 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 //textUrl = "http://easyweddings.com.au/pro-education/feed";
-                textRequest(textUrl);
+                //textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
+
+
             }
         });
 
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Velocity.Response r = Velocity.get(textUrl).connectBlocking();
-                Log.d("IMG", "response: " + r.body);
-            }
-        }).start();
+//        new Thread(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                Velocity.Response r = Velocity.get(textUrl).connectBlocking();
+//                Log.d("IMG", "response: " + r.body);
+//            }
+//        }).start();
     }
 
 
