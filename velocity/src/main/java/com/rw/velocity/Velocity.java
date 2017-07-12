@@ -292,6 +292,7 @@ public class Velocity
         static int GLOBAL_NETWORK_DELAY = 0;
         static int MAX_REDIRECTS = 10;
         static boolean LOGS_ENABLED = false;
+        static final String USER_AGENT = "velocity-android-http-client";
 
         //upload settings
         static final String LINEEND = "\r\n";

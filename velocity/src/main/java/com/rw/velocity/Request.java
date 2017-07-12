@@ -96,7 +96,7 @@ class Request
 
     void setupRequestHeaders()
     {
-        mConnection.setRequestProperty("User-Agent", "velocity-android-http-client");
+        mConnection.setRequestProperty("User-Agent", Velocity.Settings.USER_AGENT);
 
         if(mBuilder.contentType != null && !mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.TEXT.toString()))
             mConnection.setRequestProperty("Content-Type", mBuilder.contentType);
