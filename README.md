@@ -14,5 +14,5 @@ allprojects {
 ``` 
 Add the following to your app.gradle file
 ```gradle
-    compile 'com.github.ravindu1024:velocity:1.0.0'
+    compile 'com.github.ravindu1024:velocity:1.0.1'
 ```
