@@ -1,6 +1,8 @@
 package com.rw.velocityapp;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,11 @@ import android.widget.TextView;
 import com.rw.velocity.OAuthBuilder;
 import com.rw.velocity.Velocity;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
@@ -26,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     private String file = "http://mirror.internode.on.net/pub/test/5meg.test1";
     private String pdf = "http://www.flar.net/uploads/default/calendar/99f3a2304c1754aecffab145a5c80b98.pdf";
     private String sushi = "https://s3-ap-southeast-2.amazonaws.com/platform.cdn/clients/dev/filemanager/root/157e4ce754803c1.94820022_Tempura%20Soba.jpg?response-content-disposition=attachment%3B%20filename%3D%22Tempura%20Soba.jpg%22&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWZTEEFKHKIKCC3A%2F20161228%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20161228T065659Z&X-Amz-SignedHeaders=host&X-Amz-Expires=5400&X-Amz-Signature=651830960fab463cd9fcc9345a3e47cac2181fe0cad793e2785bb1af7c7fae2d";
-    private String textUrl = "https://www.google.com";
+    private String textUrl = "https://www.example.com";
 
 
     @Override
@@ -54,31 +61,12 @@ public class MainActivity extends AppCompatActivity
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
 
-
         imageView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                //textUrl = "http://easyweddings.com.au/pro-education/feed";
-                //textRequest(textUrl);
-                //downloadRequest(m3);
-                //doMultiRequest();
-                Velocity.get("http://httpbin.org/absolute-redirect/2")
-                        .connect(new Velocity.ResponseListener()
-                        {
-                            @Override
-                            public void onVelocitySuccess(Velocity.Response response)
-                            {
-
-                            }
-
-                            @Override
-                            public void onVelocityFailed(Velocity.Response error)
-                            {
-
-                            }
-                        });
+                textRequest(textUrl);
             }
         });
 

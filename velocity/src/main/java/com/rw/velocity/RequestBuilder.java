@@ -274,6 +274,19 @@ public class RequestBuilder
     }
 
     /**
+     * @see RequestBuilder#setUploadSource(String, String, String)
+     * @param stream an opened data stream
+     * @return RequestBuilder
+     */
+    public RequestBuilder setUploadSource(InputStream stream)
+    {
+        this.uploadMimeType = "application/octet-stream";
+        this.uploadStream = stream;
+
+        return this;
+    }
+
+    /**
      * Add downloaded file to the system Downloads Ui
      * @param context calling context
      * @param title title to be displayed in Downloads
@@ -289,6 +302,7 @@ public class RequestBuilder
 
         return this;
     }
+
 
 
     /**
