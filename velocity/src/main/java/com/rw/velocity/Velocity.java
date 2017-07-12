@@ -38,6 +38,8 @@ public class Velocity
         try
         {
             ThreadPool.initialize(numThreads);
+
+            Settings.USER_AGENT = System.getProperty("http.agent");
         }
         catch (InterruptedException e)
         {
@@ -292,7 +294,7 @@ public class Velocity
         static int GLOBAL_NETWORK_DELAY = 0;
         static int MAX_REDIRECTS = 10;
         static boolean LOGS_ENABLED = false;
-        static final String USER_AGENT = "velocity-android-http-client";
+        static String USER_AGENT = "velocity-android-http-client";
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -360,6 +362,10 @@ public class Velocity
             MOCK_RESPONSE_TIME = waitTime;
         }
 
+        /**
+         * Set all calls mocked
+         * @param mocked if true, all subsequent calls will be mocked
+         */
         public void setGloballyMocked(boolean mocked)
         {
             NetLog.d("set global mock : " + mocked);
@@ -377,16 +383,38 @@ public class Velocity
             GLOBAL_NETWORK_DELAY = delay;
         }
 
+        /**
+         * Sets the maximum number of redirects poer request
+         * @param redirects number of redirects
+         */
         public void setMaxRedirects(int redirects)
         {
             NetLog.d("Set max redirects: " + redirects);
             MAX_REDIRECTS = redirects;
         }
 
+        /**
+         * Enable or disable logginf. Disabled by default.
+         * @param enabled enabled state
+         */
         public void setLoggingEnabled(boolean enabled)
         {
             android.util.Log.d("Velocity", "Log enabled: " + enabled);
             LOGS_ENABLED = enabled;
+        }
+
+        /**
+         * Sets a custom user agent string
+         * @param userAgent user agent to set. (set 'null' to reset to default)
+         */
+        public void setUserAgent(@Nullable String userAgent)
+        {
+            if(userAgent == null)
+                userAgent = System.getProperty("http.agent");
+
+            android.util.Log.d("Velocity", "Set user agent: " + userAgent);
+
+            USER_AGENT = userAgent;
         }
     }
 
