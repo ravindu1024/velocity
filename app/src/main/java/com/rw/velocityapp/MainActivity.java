@@ -64,6 +64,21 @@ public class MainActivity extends AppCompatActivity
                 //textRequest(textUrl);
                 //downloadRequest(m3);
                 //doMultiRequest();
+                Velocity.get("http://httpbin.org/absolute-redirect/2")
+                        .connect(new Velocity.ResponseListener()
+                        {
+                            @Override
+                            public void onVelocitySuccess(Velocity.Response response)
+                            {
+
+                            }
+
+                            @Override
+                            public void onVelocityFailed(Velocity.Response error)
+                            {
+
+                            }
+                        });
             }
         });
 

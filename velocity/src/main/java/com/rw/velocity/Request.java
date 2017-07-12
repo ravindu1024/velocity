@@ -3,6 +3,7 @@ package com.rw.velocity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.SystemClock;
 
 import java.io.BufferedInputStream;
@@ -201,8 +202,16 @@ class Request
             while((mResponseCode == HttpURLConnection.HTTP_MOVED_PERM || mResponseCode == HttpURLConnection.HTTP_MOVED_TEMP) && count < Velocity.Settings.MAX_REDIRECTS)
             {
                 count++;
-                mBuilder.url = mConnection.getHeaderField("Location");
-                NetLog.d("redirected : " + mBuilder.url);
+
+                URL u = new URL(mBuilder.url);
+                String location = mConnection.getHeaderField("Location");
+
+                if(location.startsWith("/"))    //relative redirect
+                    mBuilder.url = u.getProtocol() + "://" + u.getHost() + location;
+                else
+                    mBuilder.url = location;
+
+                NetLog.d(mResponseCode + "/redirected : " + mBuilder.url);
 
                 mResponseCode = makeConnection();
             }

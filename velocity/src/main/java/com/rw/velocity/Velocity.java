@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,6 @@ public class Velocity
         try
         {
             ThreadPool.initialize(numThreads);
-
             Settings.USER_AGENT = System.getProperty("http.agent");
         }
         catch (InterruptedException e)
@@ -416,6 +416,17 @@ public class Velocity
             android.util.Log.d("Velocity", "Set user agent: " + userAgent);
 
             USER_AGENT = userAgent;
+        }
+
+        /**
+         * Set redirect handling to system or velocity
+         * This is left for the system by default. However, if the system doesnt handle a 302 or 303
+         * automatically then Velocity will handle this regardless of the value set for 'follow'
+         * @param follow if true - the android system will handle redirects, if false - velocity will handle them
+         */
+        public void setAutoRedirects(boolean follow)
+        {
+            HttpURLConnection.setFollowRedirects(follow);
         }
     }
 
