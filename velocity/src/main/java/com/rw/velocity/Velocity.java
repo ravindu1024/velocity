@@ -146,6 +146,7 @@ public class Velocity
 
     public enum ContentType
     {
+        FORM_DATA_MULTIPART("multipart/form-data; boundary="+Settings.BOUNDARY),
         FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
         JSON("application/json"),
         TEXT(null),
@@ -299,7 +300,7 @@ public class Velocity
         //upload settings
         static final String LINEEND = "\r\n";
         static final String TWOHYPHENS = "--";
-        static String BOUNDARY = "*****";
+        static String BOUNDARY = "--VelocityFormBoundary--";
         static int MAX_BUFFER = 4096;
 
         /**

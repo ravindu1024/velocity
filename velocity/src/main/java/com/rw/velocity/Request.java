@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -134,12 +135,35 @@ class Request
 
         if (params != null)
         {
-            OutputStream os = mConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(params);
-            writer.flush();
-            writer.close();
-            os.close();
+            if(mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.FORM_DATA_MULTIPART.toString()))
+            {
+                DataOutputStream dos = new DataOutputStream(mConnection.getOutputStream());
+                for(String param : mBuilder.params.keySet())
+                {
+                    String val = mBuilder.params.get(param);
+
+                    dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"" + param + "\"" + Velocity.Settings.LINEEND);
+                    dos.writeBytes("Content-Type: text/plain" + Velocity.Settings.LINEEND);
+                    dos.writeBytes(Velocity.Settings.LINEEND);
+                    dos.writeBytes(val);
+                    dos.writeBytes(Velocity.Settings.LINEEND);
+                }
+
+                dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.TWOHYPHENS + Velocity.Settings.LINEEND);
+
+                dos.flush();
+                dos.close();
+            }
+            else
+            {
+                OutputStream os = mConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(params);
+                writer.flush();
+                writer.close();
+                os.close();
+            }
         }
     }
 

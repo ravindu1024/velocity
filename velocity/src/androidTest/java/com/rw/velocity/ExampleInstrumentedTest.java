@@ -259,4 +259,41 @@ public class ExampleInstrumentedTest
         assertEquals(reply.form.get("key1"), "value1");
         assertEquals(reply.form.get("key2"), "value2");
     }
+
+    @Test
+    public void postMultiPart() throws Exception
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String url ="http://httpbin.org/post";
+
+        Velocity.initialize(3);
+        Velocity.post(url)
+                .withFormData("key1", "value1")
+                .withFormData("key2", "value2")
+                .withBodyContentType(Velocity.ContentType.FORM_DATA_MULTIPART)
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        serverResponse = response;
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        serverResponse = error;
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+
+        HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
+
+        assertEquals(reply.url, url);
+        assertEquals(reply.form.get("key1"), "value1");
+        assertEquals(reply.form.get("key2"), "value2");
+    }
 }
