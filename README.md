@@ -94,7 +94,8 @@ Velocity.post(url)
                 });
 ```
 
-Queing multiple requests:
+Queuing multiple requests:
+When multiple requests are queued and executed all replies are provided in a single callback. If one or more requests fail, the whole queued request is considered failed. The multi-response queue is threadsafe and is global to the application process.
 ```java
         Velocity.get(url).queue(0);
         Velocity.download(file).setDownloadFile(filepath).queue(1);
