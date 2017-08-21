@@ -1,4 +1,5 @@
 # Velocity
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Velocity-brightgreen.svg?style=flat-square)](https://android-arsenal.com/details/1/6055)
 
 An easy to use networking library for Android
 
