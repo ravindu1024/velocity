@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rw.velocity.Logger;
 import com.rw.velocity.OAuthBuilder;
 import com.rw.velocity.Velocity;
 
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity
         //Velocity.getSettings().setGloballyMocked(true);
         Velocity.getSettings().setMaxRedirects(10);
         Velocity.getSettings().setLoggingEnabled(true);
+        //Velocity.getSettings().setCustomLogger(new CustomLogger("Velocity"));
+
+
 
 
         progressDialog = new ProgressDialog(this);
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                textRequest(textUrl);
+                textRequest("http://www.google.com");
             }
         });
 
@@ -172,7 +178,10 @@ public class MainActivity extends AppCompatActivity
 
     private void textRequest(String url)
     {
-        Velocity.get(url).connect(new Velocity.ResponseListener()
+        Velocity
+                .get(url)
+                .withHeader("key", "velue")
+                .connect(new Velocity.ResponseListener()
         {
             @Override
             public void onVelocitySuccess(Velocity.Response response)
@@ -193,5 +202,21 @@ public class MainActivity extends AppCompatActivity
                 Log.d("IMG", "response: " + error.body);
             }
         });
+    }
+
+    class CustomLogger extends Logger
+    {
+
+        CustomLogger(String tag)
+        {
+            super(tag);
+        }
+
+        @Override
+        protected void logConnectionError(@NonNull Velocity.Response error, @Nullable Exception systemError)
+        {
+            //super.logConnectionError(error, systemError);
+            Log.d("IMG", "error: "+error.body);
+        }
     }
 }

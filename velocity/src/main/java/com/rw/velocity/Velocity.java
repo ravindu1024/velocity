@@ -185,48 +185,6 @@ public class Velocity
         @NonNull
         public final String requestUrl;
 
-        @Nullable
-        private RequestBuilder builder;
-
-        public <T> T deserialize(Class<T> type)
-        {
-            return new Deserializer().deserialize(body, type);
-        }
-
-        public <T> ArrayList<T> deserializeList(Class<T[]> type)
-        {
-            return new Deserializer().deserializeArrayList(body, type);
-        }
-
-        @Override
-        public String toString()
-        {
-            if (builder == null)
-                return super.toString();
-
-            @SuppressWarnings("StringBufferReplaceableByString")
-            StringBuilder str = new StringBuilder();
-
-            str.append("--------- Request-------------").append("\n");
-            str.append(builder.requestMethod).append(" : ").append(requestUrl).append("\n");
-            str.append("Headers : ").append(builder.headers.size()).append("\n");
-            str.append("Form Data : ").append(builder.params.size()).append("\n");
-            str.append("Path params : ").append(builder.pathParams.size()).append("\n");
-
-
-            str.append("--------- Response-------------").append("\n");
-            str.append(responseCode).append("\n");
-            str.append("Response headeres: ").append("\n");
-            for (String s : responseHeaders.keySet())
-            {
-                str.append(s).append(" : ").append(responseHeaders.get(s)).append("\n");
-            }
-
-            str.append("----------------------------------");
-
-            return str.toString();
-        }
-
         Response(int requestId,
                  @NonNull String body,
                  int status,
@@ -256,6 +214,47 @@ public class Velocity
                 this.responseHeaders = responseHeaders;
         }
 
+        @Nullable
+        private RequestBuilder builder;
+
+        public <T> T deserialize(Class<T> type)
+        {
+            return new Deserializer().deserialize(body, type);
+        }
+
+        public <T> ArrayList<T> deserializeList(Class<T[]> type)
+        {
+            return new Deserializer().deserializeArrayList(body, type);
+        }
+
+        @Override
+        public String toString()
+        {
+            if (builder == null)
+                return super.toString();
+
+            @SuppressWarnings("StringBufferReplaceableByString")
+            StringBuilder str = new StringBuilder();
+
+            str.append("--------- Request-------------").append("\n");
+            str.append("----").append(builder.requestMethod).append(" : ").append(requestUrl).append("\n");
+            str.append("----").append("Headers : ").append(builder.headers.size()).append("\n");
+            str.append("----").append("Form Data : ").append(builder.params.size()).append("\n");
+            str.append("----").append("Path params : ").append(builder.pathParams.size()).append("\n");
+
+
+            str.append("--------- Response-------------").append("\n");
+            str.append("----").append(responseCode).append("\n");
+            str.append("----").append("Response headeres: ").append("\n");
+            for (String s : responseHeaders.keySet())
+            {
+                str.append("----").append(s).append(" : ").append(responseHeaders.get(s)).append("\n");
+            }
+
+            str.append("----------------------------------");
+
+            return str.toString();
+        }
     }
 
 
@@ -427,6 +426,15 @@ public class Velocity
         public void setAutoRedirects(boolean follow)
         {
             HttpURLConnection.setFollowRedirects(follow);
+        }
+
+        /**
+         * Set a custom logger class that inherits from {@link Logger}
+         * @param logger custom log class
+         */
+        public void setCustomLogger(Logger logger)
+        {
+            NetLog.setLogger(logger);
         }
     }
 

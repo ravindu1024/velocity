@@ -356,7 +356,10 @@ class Request
                     if (success)
                         mBuilder.callback.onVelocitySuccess(reply);
                     else
+                    {
+                        NetLog.conError(reply, null);
                         mBuilder.callback.onVelocityFailed(reply);
+                    }
                 }
                 else
                     NetLog.d("Warning: No Data callback supplied");

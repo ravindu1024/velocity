@@ -1,5 +1,8 @@
 package com.rw.velocity;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * velocity-android
  * <p>
@@ -9,11 +12,36 @@ package com.rw.velocity;
 
 class NetLog
 {
-    private final static String TAG = "Velocity";
+//    private final static String TAG = "Velocity";
+
+    private static Logger logger = new Logger("Velocity")
+    {
+        @Override
+        protected void logConnectionError(@NonNull Velocity.Response error, @Nullable Exception systemError)
+        {
+
+        }
+    };
+
+    static void setLogger(Logger logger)
+    {
+        NetLog.logger = logger;
+    }
 
     static void d(String message)
     {
         if (Velocity.Settings.LOGS_ENABLED)
-            android.util.Log.d(TAG, message);
+            logger.logDebug(message);
+    }
+
+    static void e(String message)
+    {
+        if (Velocity.Settings.LOGS_ENABLED)
+            logger.logError(message);
+    }
+
+    static void conError(Velocity.Response response, Exception ex)
+    {
+        logger.logConnectionError(response, ex);
     }
 }
