@@ -28,8 +28,7 @@ allprojects {
 ``` 
 Add the following to your app.gradle file
 ```gradle
-    compile 'com.github.ravindu1024:velocity:1.0.1'
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.github.ravindu1024:velocity:1.0.2'
 ```
 
 # Usage
