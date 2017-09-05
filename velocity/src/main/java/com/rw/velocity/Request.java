@@ -123,20 +123,14 @@ class Request
         mConnection.setDoInput(true);
         mConnection.setDoOutput(true);
 
-        String params = null;
-
-        if (mBuilder.rawParams != null && mBuilder.rawParams.length() > 0)
+        if (!mBuilder.params.isEmpty())
         {
-            params = mBuilder.rawParams;
-        }
-        else if (!mBuilder.params.isEmpty())
-        {
-            params = getFormattedParams();
+            mBuilder.rawParams = getFormattedParams();
         }
 
-        if (params != null)
+        if (mBuilder.rawParams != null)
         {
-            if(mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.FORM_DATA_MULTIPART.toString()))
+            if(mBuilder.contentType != null && mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.FORM_DATA_MULTIPART.toString()))
             {
                 DataOutputStream dos = new DataOutputStream(mConnection.getOutputStream());
                 for(String param : mBuilder.params.keySet())
@@ -160,7 +154,7 @@ class Request
             {
                 OutputStream os = mConnection.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(params);
+                writer.write(mBuilder.rawParams);
                 writer.flush();
                 writer.close();
                 os.close();

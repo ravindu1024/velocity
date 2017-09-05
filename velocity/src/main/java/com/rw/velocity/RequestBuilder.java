@@ -124,7 +124,7 @@ public class RequestBuilder
     }
 
     /**
-     * Add HTTP params as a String (raw ot JSON string). "Content type" will not be set in request headers.
+     * Add HTTP params as a String (raw JSON string). "Content type" will not be set in request headers.
      *
      * @param params raw parameter String
      * @return request builder

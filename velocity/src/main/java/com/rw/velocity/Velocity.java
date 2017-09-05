@@ -146,7 +146,7 @@ public class Velocity
 
     public enum ContentType
     {
-        FORM_DATA_MULTIPART("multipart/form-data; boundary="+Settings.BOUNDARY),
+        FORM_DATA_MULTIPART("multipart/form-data; boundary=" + Settings.BOUNDARY),
         FORM_DATA_URLENCODED("application/x-www-form-urlencoded"),
         JSON("application/json"),
         TEXT(null),
@@ -185,13 +185,22 @@ public class Velocity
         @NonNull
         public final String requestUrl;
 
+        public @Nullable
+        final HashMap<String, String> requestHeaders;
+        public @Nullable
+        final HashMap<String, String> formData;
+        public @Nullable
+        final String requestBody;
+        public @Nullable
+        final String requestMethod;
+
         Response(int requestId,
                  @NonNull String body,
                  int status,
                  @Nullable Map<String, List<String>> responseHeaders,
                  @Nullable Bitmap image,
                  @Nullable Object userData,
-                 @Nullable RequestBuilder builder)
+                 @NonNull RequestBuilder builder)
         {
             this.requestId = requestId;
             this.body = body;
@@ -200,10 +209,12 @@ public class Velocity
             this.userData = userData;
             this.builder = builder;
 
-            if (builder != null)
-                this.requestUrl = builder.originUrl;
-            else
-                this.requestUrl = "";
+
+            this.requestUrl = builder.originUrl;
+            this.requestHeaders = builder.headers;
+            this.formData = builder.params;
+            this.requestBody = builder.rawParams;
+            this.requestMethod = builder.requestMethod;
 
             if (responseHeaders == null)
             {
@@ -364,6 +375,7 @@ public class Velocity
 
         /**
          * Set all calls mocked
+         *
          * @param mocked if true, all subsequent calls will be mocked
          */
         public void setGloballyMocked(boolean mocked)
@@ -385,6 +397,7 @@ public class Velocity
 
         /**
          * Sets the maximum number of redirects poer request
+         *
          * @param redirects number of redirects
          */
         public void setMaxRedirects(int redirects)
@@ -395,6 +408,7 @@ public class Velocity
 
         /**
          * Enable or disable logginf. Disabled by default.
+         *
          * @param enabled enabled state
          */
         public void setLoggingEnabled(boolean enabled)
@@ -405,11 +419,12 @@ public class Velocity
 
         /**
          * Sets a custom user agent string
+         *
          * @param userAgent user agent to set. (set 'null' to reset to default)
          */
         public void setUserAgent(@Nullable String userAgent)
         {
-            if(userAgent == null)
+            if (userAgent == null)
                 userAgent = System.getProperty("http.agent");
 
             android.util.Log.d("Velocity", "Set user agent: " + userAgent);
@@ -421,6 +436,7 @@ public class Velocity
          * Set redirect handling to system or velocity
          * This is left for the system by default. However, if the system doesnt handle a 302 or 303
          * automatically then Velocity will handle this regardless of the value set for 'follow'
+         *
          * @param follow if true - the android system will handle redirects, if false - velocity will handle them
          */
         public void setAutoRedirects(boolean follow)
@@ -430,6 +446,7 @@ public class Velocity
 
         /**
          * Set a custom logger class that inherits from {@link Logger}
+         *
          * @param logger custom log class
          */
         public void setCustomLogger(Logger logger)

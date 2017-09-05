@@ -31,6 +31,7 @@ public class ExampleInstrumentedTest
         Map<String, String> form;
         Map<String, String> json;
         String url;
+        String data;
     }
 
     private Velocity.Response serverResponse;
@@ -189,6 +190,153 @@ public class ExampleInstrumentedTest
         assertEquals(reply.url, url);
         assertEquals(reply.json.get("key1"), "value1");
         assertEquals(reply.json.get("key2"), "value2");
+    }
+
+    @Test
+    public void postFormDataRaw() throws Exception
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String url ="http://httpbin.org/post";
+
+        String postData = "raw_data_string";
+
+        Velocity.initialize(3);
+        Velocity.post(url)
+                .withBody(postData)
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        serverResponse = response;
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        serverResponse = error;
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+
+        HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
+
+        assertEquals(reply.url, url);
+        assertEquals(reply.form.containsKey(postData), true);
+    }
+
+    @Test
+    public void postFormDataRawJson() throws Exception
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String url ="http://httpbin.org/post";
+
+        String postData = "{\"key1\":\"value1\"}";
+
+        Velocity.initialize(3);
+        Velocity.post(url)
+                .withBody(postData, Velocity.ContentType.JSON)
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        serverResponse = response;
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        serverResponse = error;
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+
+        HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
+
+        assertEquals(reply.url, url);
+        assertEquals(reply.json.get("key1"), "value1");
+    }
+
+    @Test
+    public void postFormDataRawTextPlain() throws Exception
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String url ="http://httpbin.org/post";
+
+        String postData = "plain_text";
+
+        Velocity.initialize(3);
+        Velocity.post(url)
+                .withBody(postData, Velocity.ContentType.TEXT_PLAIN)
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        serverResponse = response;
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        serverResponse = error;
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+
+        HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
+
+        assertEquals(reply.url, url);
+        assertEquals(reply.data, postData);
+    }
+
+    @Test
+    public void postFormDataRawTextPlainAndForm() throws Exception
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String url ="http://httpbin.org/post";
+
+        String postData = "plain_text";
+
+        Velocity.initialize(3);
+        Velocity.post(url)
+                .withBody(postData, Velocity.ContentType.TEXT_PLAIN)
+                .withFormData("key1", "value1")
+                .connect(new Velocity.ResponseListener()
+                {
+                    @Override
+                    public void onVelocitySuccess(Velocity.Response response)
+                    {
+                        serverResponse = response;
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onVelocityFailed(Velocity.Response error)
+                    {
+                        serverResponse = error;
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
+
+        HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
+
+        //raw data will be ignored if form data was given
+        assertEquals(reply.url, url);
+        assertEquals(reply.data, "");
+        assertEquals(reply.form.get("key1"), "value1");
     }
 
     @Test

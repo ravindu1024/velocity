@@ -63,7 +63,7 @@ class OAuthHandler implements Velocity.ResponseListener
     {
         if (builder.callback != null)
         {
-            final Velocity.Response response = new Velocity.Response(0, e.toString(), 0, null, null, null, null);
+            final Velocity.Response response = new Velocity.Response(0, e.toString(), 0, null, null, null, new RequestBuilder(builder.url, Velocity.RequestType.Text));
             Runnable r = new Runnable()
             {
                 @Override
