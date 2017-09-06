@@ -59,6 +59,10 @@ class OAuthHandler implements Velocity.ResponseListener
 
     }
 
+    /**
+     * This call is extremely unlikely
+     * @param e unsupported encoding exception from base64 creation
+     */
     private void handleException(Exception e)
     {
         if (builder.callback != null)

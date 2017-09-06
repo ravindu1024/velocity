@@ -74,7 +74,7 @@ class DownloadRequest extends Request
         }
         catch (IOException ioe)
         {
-            mResponse = new StringBuilder(ioe.getMessage());
+            mResponse = new StringBuilder(ioe.toString());
             ret = false;
         }
 

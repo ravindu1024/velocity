@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         //Velocity.getSettings().setGloballyMocked(true);
         Velocity.getSettings().setMaxRedirects(10);
         Velocity.getSettings().setLoggingEnabled(true);
-        //Velocity.getSettings().setCustomLogger(new CustomLogger("Velocity"));
+        Velocity.getSettings().setCustomLogger(new CustomLogger("Velocity"));
 
 
 

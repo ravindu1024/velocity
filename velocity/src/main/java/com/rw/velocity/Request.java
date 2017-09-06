@@ -215,7 +215,7 @@ class Request
         catch (IOException ioe)
         {
             ret = false;
-            mResponse = new StringBuilder(ioe.getMessage());
+            mResponse = new StringBuilder(ioe.toString());
         }
 
         return ret;
@@ -277,7 +277,7 @@ class Request
         catch (IOException e)
         {
             ret = false;
-            mResponse = new StringBuilder(e.getMessage());
+            mResponse = new StringBuilder(e.toString());
         }
 
         return ret;
@@ -298,7 +298,7 @@ class Request
         }
         catch (IOException e)
         {
-            mResponse.append(e.getMessage());
+            mResponse.append(e.toString());
         }
 
     }

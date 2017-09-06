@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -184,6 +185,8 @@ public class Velocity
         public final int requestId;
         @NonNull
         public final String requestUrl;
+        @NonNull
+        public final String fullUrl;
 
         public @Nullable
         final HashMap<String, String> requestHeaders;
@@ -208,8 +211,7 @@ public class Velocity
             this.image = image;
             this.userData = userData;
             this.builder = builder;
-
-
+            this.fullUrl = builder.url;
             this.requestUrl = builder.originUrl;
             this.requestHeaders = builder.headers;
             this.formData = builder.params;
