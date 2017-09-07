@@ -30,27 +30,37 @@ class OAuthHandler implements Velocity.ResponseListener
     {
         String authHeader;
 
+        RequestBuilder rb = Velocity.post(builder.url);
+
         try
         {
-            if (builder.clientIdSecretHash != null && builder.clientIdSecretHash.length() > 1)
-                authHeader = builder.clientIdSecretHash;
+            if (builder.clientInfoInHeader)
+            {
+                if (builder.clientIdSecretHash != null && builder.clientIdSecretHash.length() > 1)
+                    authHeader = builder.headerPrefix + " " + builder.clientIdSecretHash;
+                else
+                {
+                    String h = builder.clientId + ":" + builder.clientSecret;
+
+                    byte[] bytes = h.getBytes("UTF-8");
+                    authHeader = builder.headerPrefix + " " + Base64.encodeToString(bytes, Base64.URL_SAFE | Base64.NO_WRAP);
+                }
+
+                rb = rb.withHeader("Authorization", authHeader);
+            }
             else
             {
-                authHeader = builder.clientId + ":" + builder.clientSecret;
-
-                byte[] bytes = authHeader.getBytes("UTF-8");
-                authHeader = "Basic " + Base64.encodeToString(bytes, Base64.URL_SAFE | Base64.NO_WRAP);
+                rb = rb.withFormData("client_id", builder.clientId);
+                rb = rb.withFormData("client_secret", builder.clientSecret);
             }
 
 
-            Velocity.post(builder.url)
-                    .withHeader("Authorization", authHeader)
-                    .withFormData("password", builder.pass)
-                    .withFormData("username", builder.user)
-                    .withFormData("grant_type", builder.grantType)
-                    .withFormData("scope", builder.scope)
-                    .withBodyContentType(Velocity.ContentType.FORM_DATA_URLENCODED)
-                    .connect(REQUEST_TOKEN, this);
+            rb.withFormData("password", builder.pass)
+              .withFormData("username", builder.user)
+              .withFormData("grant_type", builder.grantType)
+              .withFormData("scope", builder.scope)
+              .withBodyContentType(Velocity.ContentType.FORM_DATA_URLENCODED)
+              .connect(REQUEST_TOKEN, this);
         }
         catch (UnsupportedEncodingException ue)
         {
@@ -61,6 +71,7 @@ class OAuthHandler implements Velocity.ResponseListener
 
     /**
      * This call is extremely unlikely
+     *
      * @param e unsupported encoding exception from base64 creation
      */
     private void handleException(Exception e)

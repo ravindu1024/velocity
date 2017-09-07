@@ -12,10 +12,12 @@ public class OAuthBuilder
     String scope = "";
     String grantType = "";
     String clientId = "";
+    String headerPrefix = "";
     String clientSecret = "";
     String clientIdSecretHash = "";
     String url = "";
     Velocity.OAuthListener callback;
+    boolean clientInfoInHeader = false;
 
     public enum GrantType
     {
@@ -87,6 +89,24 @@ public class OAuthBuilder
     {
         this.clientSecret = secret;
         this.clientId = id;
+        this.clientInfoInHeader = false;
+        return this;
+    }
+
+    /**
+     * set the client id and secret as an encoded Authorization header.
+     * Format: 'Authorization':'headerPrefix Base64(id:secret)
+     * @param id
+     * @param secret
+     * @param headerPrefix
+     * @return
+     */
+    public OAuthBuilder withClientAsAuthHeader(String id, String secret, String headerPrefix)
+    {
+        this.clientSecret = secret;
+        this.clientId = id;
+        this.headerPrefix = headerPrefix;
+        this.clientInfoInHeader = true;
         return this;
     }
 
@@ -95,9 +115,11 @@ public class OAuthBuilder
      * @param hash hashed client secret
      * @return OAuthBuilder
      */
-    public OAuthBuilder withClientSecretHash(String hash)
+    public OAuthBuilder withClientAsAuthHeader(String hash, String headerPrefix)
     {
         this.clientIdSecretHash = hash;
+        this.headerPrefix = headerPrefix;
+        this.clientInfoInHeader = true;
         return this;
     }
 

@@ -123,7 +123,7 @@ public class Velocity
 
 
     /**
-     * This is only partially functional. Right now it only supports the resource owner password flow.
+     * WARNING : This feature is experimental. Currently only supports the resource owner password flow.
      *
      * @param publicUrl token url
      * @return OAuthBuilder
