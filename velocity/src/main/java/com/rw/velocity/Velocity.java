@@ -308,6 +308,7 @@ public class Velocity
         static int MAX_REDIRECTS = 10;
         static boolean LOGS_ENABLED = false;
         static String USER_AGENT = "velocity-android-http-client";
+        static boolean GZIP_ENABLED = false;
 
         //upload settings
         static final String LINEEND = "\r\n";
@@ -454,6 +455,16 @@ public class Velocity
         public void setCustomLogger(Logger logger)
         {
             NetLog.setLogger(logger);
+        }
+
+        /**
+         * Enable gzip compression
+         * Adds 'Accept-Encoding = gzip,deflate' header to all requests
+         * @param enabled if true, enabled compression
+         */
+        public void setResponseCompressionEnabled(boolean enabled)
+        {
+            GZIP_ENABLED = enabled;
         }
     }
 

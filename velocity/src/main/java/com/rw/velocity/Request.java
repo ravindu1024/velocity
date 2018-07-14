@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -100,8 +101,11 @@ class Request
     {
         mConnection.setRequestProperty("User-Agent", Velocity.Settings.USER_AGENT);
 
-        if(mBuilder.contentType != null && !mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.TEXT.toString()))
+        if((mBuilder.contentType != null && !mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.TEXT.toString())) || mBuilder.compressed)
             mConnection.setRequestProperty("Content-Type", mBuilder.contentType);
+
+        if(Velocity.Settings.GZIP_ENABLED)
+            mConnection.setRequestProperty("Accept-Encoding", "gzip,deflate");
 
 
         if (!mBuilder.headers.isEmpty())
@@ -251,16 +255,21 @@ class Request
         {
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
             {
+                InputStream in = mConnection.getInputStream();
+                if(mConnection.getHeaderField("Content-Encoding") != null && mConnection.getHeaderField("Content-Encoding").contains("gzip"))
+                {
+                    in = new GZIPInputStream(in);
+                }
 
                 if (mConnection.getContentType() != null && mConnection.getContentType().startsWith("image"))
                 {
-                    mResponseImage = BitmapFactory.decodeStream(mConnection.getInputStream());
+                    mResponseImage = BitmapFactory.decodeStream(in);
                     mResponse.append(mConnection.getContentType());
                 }
                 else
                 {
-                    InputStream in = new BufferedInputStream(mConnection.getInputStream());
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    BufferedInputStream inStream = new BufferedInputStream(in);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
 
                     String line;
                     while ((line = reader.readLine()) != null)

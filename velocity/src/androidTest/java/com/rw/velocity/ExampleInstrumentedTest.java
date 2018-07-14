@@ -52,6 +52,7 @@ public class ExampleInstrumentedTest
         String url ="http://httpbin.org/get";
 
         Velocity.initialize(3);
+        Velocity.getSettings().setResponseCompressionEnabled(true);
         Velocity.get(url)
                 .withHeader("header1", "value1")
                 .withHeader("header2", "value2")
@@ -418,6 +419,7 @@ public class ExampleInstrumentedTest
         String url ="http://httpbin.org/post";
 
         Velocity.initialize(3);
+        Velocity.getSettings().setResponseCompressionEnabled(true);
         Velocity.post(url)
                 .withFormData("key1", "value1")
                 .withFormData("key2", "value2")
@@ -529,6 +531,7 @@ public class ExampleInstrumentedTest
         String url ="http://httpbin.org/image/png";
 
         Velocity.initialize(3);
+        Velocity.getSettings().setResponseCompressionEnabled(true);
         Velocity.get(url)
                 .connect(new Velocity.ResponseListener()
                 {

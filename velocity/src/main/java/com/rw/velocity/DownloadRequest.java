@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Build;
 import android.webkit.MimeTypeMap;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 /**
  * velocity-android
@@ -36,6 +38,11 @@ class DownloadRequest extends Request
             if (mResponseCode / 100 == 2) //all 2xx codes are OK
             {
                 InputStream inputStream = mConnection.getInputStream();
+                if(mConnection.getHeaderField("Content-Encoding") != null && mConnection.getHeaderField("Content-Encoding").contains("gzip"))
+                {
+                    inputStream = new GZIPInputStream(inputStream);
+                }
+
 
 
                 FileOutputStream outputStream = new FileOutputStream(mBuilder.downloadFile);

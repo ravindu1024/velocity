@@ -43,6 +43,7 @@ public class RequestBuilder
     final String originUrl;
     Velocity.ProgressListener progressListener;
     boolean mocked = false;
+    boolean compressed = false;
     String mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
 
     private Velocity.RequestType requestType = Velocity.RequestType.Text;
@@ -315,6 +316,12 @@ public class RequestBuilder
     public RequestBuilder withProgressListener(Velocity.ProgressListener listener)
     {
         this.progressListener = listener;
+        return this;
+    }
+
+    public RequestBuilder withResponseCompression()
+    {
+        this.compressed = true;
         return this;
     }
 

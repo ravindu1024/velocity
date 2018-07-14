@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
         Velocity.getSettings().setMaxRedirects(10);
         Velocity.getSettings().setLoggingEnabled(true);
         Velocity.getSettings().setCustomLogger(new CustomLogger("Velocity"));
+        //Velocity.getSettings().setResponseCompressionEnabled(true);
 
 
 
@@ -71,7 +72,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                textRequest("http://www.google.com");
+                //textRequest("http://139.162.28.197:8080/listing/search");
+                downloadRequest("http://139.162.28.197:8080/listing/image/a26d7290-ab75-4291-b86b-d39e43eb2eed");
+                //textRequest("http://139.162.28.197:8080/listing/image/a26d7290-ab75-4291-b86b-d39e43eb2eed");
             }
         });
 
@@ -146,6 +149,7 @@ public class MainActivity extends AppCompatActivity
 
         Velocity.download(url)
                 .setDownloadFile(filepath)
+                .withResponseCompression()
                 .addToDownloadsFolder(this, "download test", "test file")
                 .withProgressListener(new Velocity.ProgressListener()
                 {
@@ -180,19 +184,20 @@ public class MainActivity extends AppCompatActivity
     {
         Velocity
                 .get(url)
-                .withHeader("key", "velue")
+                .withHeader("postcode", "3020")
+                .withResponseCompression()
                 .connect(new Velocity.ResponseListener()
         {
             @Override
             public void onVelocitySuccess(Velocity.Response response)
             {
                 Log.d("IMG", "response: " + response.body);
-                textView.setText(response.body);
+                //textView.setText(response.body);
                 if (response.image != null)
                     imageView.setImageBitmap(response.image);
 
                 Log.d("IMG", "response toString:");
-                Log.d("IMG", response.toString());
+                //Log.d("IMG", response.toString());
             }
 
             @Override
