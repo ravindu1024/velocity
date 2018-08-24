@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 
 //noinspection GroovyMissingReturnStatement
 android {
-    compileSdkVersion 27
-    buildToolsVersion "28.0.0"
+    compileSdkVersion project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
-        versionCode 5
-        versionName "1.0.5"
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+        versionCode project.versionCode
+        versionName project.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -29,5 +29,5 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.5'
-    compile 'com.android.support:support-annotations:27.1.1'
+    compile "com.android.support:support-annotations:${supportVersion}"
 }

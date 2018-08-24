@@ -1,5 +1,23 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+project.ext {
+    buildToolsVersion="28.0.0"
+    minSdkVersion=14
+    targetSdkVersion=27
+    compileSdkVersion=27
+
+    supportVersion = "27.1.1"
+    playServicesVersion = "15.0.1"
+    googleServicesVersion = "4.0.2"
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    versionCode = 7
+    versionName = "1.0.7"
+
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -22,4 +40,8 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext{
+
 }
