@@ -13,8 +13,8 @@ project.ext {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
-    versionCode = 7
-    versionName = "1.0.7"
+    versionCode = 8
+    versionName = "1.0.8"
 
 }
 
