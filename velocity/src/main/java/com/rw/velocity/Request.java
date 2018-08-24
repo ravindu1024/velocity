@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.util.Pair;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -110,8 +111,8 @@ class Request
 
         if (!mBuilder.headers.isEmpty())
         {
-            for (String key : mBuilder.headers.keySet())
-                mConnection.setRequestProperty(key, mBuilder.headers.get(key));
+            for (Pair<String, String> p : mBuilder.headers)
+                mConnection.setRequestProperty(p.first, p.second);
         }
     }
 
@@ -137,15 +138,13 @@ class Request
             if(mBuilder.contentType != null && mBuilder.contentType.equalsIgnoreCase(Velocity.ContentType.FORM_DATA_MULTIPART.toString()))
             {
                 DataOutputStream dos = new DataOutputStream(mConnection.getOutputStream());
-                for(String param : mBuilder.params.keySet())
+                for(Pair<String, String> p : mBuilder.params)
                 {
-                    String val = mBuilder.params.get(param);
-
                     dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"" + param + "\"" + Velocity.Settings.LINEEND);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"" + p.first + "\"" + Velocity.Settings.LINEEND);
                     dos.writeBytes("Content-Type: text/plain" + Velocity.Settings.LINEEND);
                     dos.writeBytes(Velocity.Settings.LINEEND);
-                    dos.writeBytes(val);
+                    dos.writeBytes(p.second);
                     dos.writeBytes(Velocity.Settings.LINEEND);
                 }
 
@@ -171,16 +170,16 @@ class Request
         StringBuilder params = new StringBuilder();
         boolean first = true;
 
-        for (String key : mBuilder.params.keySet())
+        for (Pair<String, String> p : mBuilder.params)
         {
             if (first)
                 first = false;
             else
                 params.append("&");
 
-            params.append(URLEncoder.encode(key, "UTF-8"));
+            params.append(URLEncoder.encode(p.first, "UTF-8"));
             params.append("=");
-            params.append(URLEncoder.encode(mBuilder.params.get(key), "UTF-8"));
+            params.append(URLEncoder.encode(p.second, "UTF-8"));
         }
 
         return params.toString();

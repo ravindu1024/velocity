@@ -3,6 +3,7 @@ package com.rw.velocity;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -189,13 +190,13 @@ public class Velocity
         public final String fullUrl;
 
         public @Nullable
-        final HashMap<String, String> requestHeaders;
+        final ArrayList<Pair<String, String>> requestHeaders;
         public @Nullable
-        final HashMap<String, String> formData;
+        final ArrayList<Pair<String, String>> formData;
         public @Nullable
-        final String requestBody;
+        final String                          requestBody;
         public @Nullable
-        final String requestMethod;
+        final String                          requestMethod;
 
         Response(int requestId,
                  @NonNull String body,
