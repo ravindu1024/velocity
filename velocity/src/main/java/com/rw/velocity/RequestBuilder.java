@@ -97,7 +97,7 @@ public class RequestBuilder
      * @param value path parameter value
      * @return request builder
      */
-    public RequestBuilder withPathParam(String key, String value)
+    public RequestBuilder withQueryParam(String key, String value)
     {
         this.queryParams.add(new Pair<>(key, value));
         return this;
@@ -107,12 +107,12 @@ public class RequestBuilder
     /**
      * Add a list of path parameters
      *
-     * @param pathParams map containing path parameters and key values
+     * @param queryParams map containing path parameters and key values
      * @return request builder
      */
-    public RequestBuilder withPathParams(HashMap<String, String> pathParams)
+    public RequestBuilder withQueryParams(HashMap<String, String> queryParams)
     {
-        for(Map.Entry<String, String> p : pathParams.entrySet())
+        for(Map.Entry<String, String> p : queryParams.entrySet())
             this.queryParams.add(new Pair<>(p.getKey(), p.getValue()));
 
         return this;
