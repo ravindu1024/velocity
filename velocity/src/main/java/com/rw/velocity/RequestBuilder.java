@@ -6,11 +6,14 @@ import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.WorkerThread;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * velocity-android
@@ -21,30 +24,30 @@ import java.util.HashMap;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class RequestBuilder
 {
-    HashMap<String, String> headers = new HashMap<>();
-    HashMap<String, String> params = new HashMap<>();
-    HashMap<String, String> pathParams = new HashMap<>();
+    HashMap<String, String>         headers     = new HashMap<>();
+    HashMap<String, String>         params      = new HashMap<>();
+    ArrayList<Pair<String, String>> queryParams = new ArrayList<>();
     String rawParams;
     String requestMethod = "GET";
-    Object userData;
-    String uploadFile;
-    String uploadParamName;
-    String uploadMimeType;
-    InputStream uploadStream;
-    String downloadFile;
+    Object                userData;
+    String                uploadFile;
+    String                uploadParamName;
+    String                uploadMimeType;
+    InputStream           uploadStream;
+    String                downloadFile;
     Velocity.DownloadType downloadType;
     String downloadUiTitle = "";
     String downloadUiDescr = "";
     Context context;
     int requestId = 0;
-    String contentType;
+    String                    contentType;
     Velocity.ResponseListener callback;
-    String url;
+    String                    url;
     final String originUrl;
     Velocity.ProgressListener progressListener;
-    boolean mocked = false;
-    boolean compressed = false;
-    String mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
+    boolean mocked       = false;
+    boolean compressed   = false;
+    String  mockResponse = "Global Mock is enabled. Velovity will mock all calls and return this message.";
 
     private Velocity.RequestType requestType = Velocity.RequestType.Text;
 
@@ -89,25 +92,29 @@ public class RequestBuilder
 
     /**
      * Add a single path encoded parameter
-     * @param key path parameter key
+     *
+     * @param key   path parameter key
      * @param value path parameter value
      * @return request builder
      */
-    public RequestBuilder withPathParam(String key, String value)
+    public RequestBuilder withQueryParam(String key, String value)
     {
-        this.pathParams.put(key, value);
+        this.queryParams.add(new Pair<>(key, value));
         return this;
     }
 
 
     /**
      * Add a list of path parameters
-     * @param pathParams map containing path parameters and key values
+     *
+     * @param queryParams map containing path parameters and key values
      * @return request builder
      */
-    public RequestBuilder withPathParams(HashMap<String, String> pathParams)
+    public RequestBuilder withQueryParams(HashMap<String, String> queryParams)
     {
-        this.pathParams.putAll(pathParams);
+        for(Map.Entry<String, String> entry: queryParams.entrySet())
+            this.queryParams.add(new Pair<String, String>(entry.getKey(), entry.getValue()));
+
         return this;
     }
 
@@ -139,6 +146,7 @@ public class RequestBuilder
 
     /**
      * Add HTTP body as a json object. Content type: application/json
+     *
      * @param toJsonObect body
      * @return this builder
      */
@@ -168,7 +176,8 @@ public class RequestBuilder
 
     /**
      * Add a key value pair as encoded form data. Content type: application/form-x-www-form-urlencoded
-     * @param key parameter key
+     *
+     * @param key   parameter key
      * @param value parameter value
      * @return request builder
      */
@@ -181,6 +190,7 @@ public class RequestBuilder
 
     /**
      * Set HTTP body content type
+     *
      * @param contentType select from {@link Velocity.ContentType}
      * @return this builder
      */
@@ -211,6 +221,7 @@ public class RequestBuilder
 
     /**
      * Set this request as a mock request that will return the given response
+     *
      * @param mockResponse the response to be returned
      * @return request builder
      */
@@ -223,6 +234,7 @@ public class RequestBuilder
 
     /**
      * Set the download location and filename
+     *
      * @param downloadFile the name of the file to be saved
      * @return this builder
      */
@@ -237,6 +249,7 @@ public class RequestBuilder
      * 'Automatic' : set the type from the response headers
      * 'Base64toPdf' : convert the base64 response into a pdf file and save
      * 'Base64toJpg' : convert the base64 response into a jpeg and save
+     *
      * @param type download file type
      * @return this builder
      */
@@ -248,8 +261,9 @@ public class RequestBuilder
 
     /**
      * set the details of the file to be uploaded
-     * @param paramName form parameter name(or field) corresponding to this file (eg: "profile-picture" or "id-scan" etc)
-     * @param mimeType mime type of the file. eg: "text/plain" , "image/jpeg" or "video/mp4"
+     *
+     * @param paramName  form parameter name(or field) corresponding to this file (eg: "profile-picture" or "id-scan" etc)
+     * @param mimeType   mime type of the file. eg: "text/plain" , "image/jpeg" or "video/mp4"
      * @param uploadFile path to the file to be uploaded
      * @return RequestBuilder
      */
@@ -262,9 +276,8 @@ public class RequestBuilder
     }
 
     /**
-     *
-     * @see RequestBuilder#setUploadSource(String, String, String)
      * @param uploadStream an open file as an {@link InputStream}
+     * @see RequestBuilder#setUploadSource(String, String, String)
      */
     public RequestBuilder setUploadSource(String paramName, String mimeType, InputStream uploadStream)
     {
@@ -275,9 +288,9 @@ public class RequestBuilder
     }
 
     /**
-     * @see RequestBuilder#setUploadSource(String, String, String)
      * @param stream an opened data stream
      * @return RequestBuilder
+     * @see RequestBuilder#setUploadSource(String, String, String)
      */
     public RequestBuilder setUploadSource(InputStream stream)
     {
@@ -289,8 +302,9 @@ public class RequestBuilder
 
     /**
      * Add downloaded file to the system Downloads Ui
-     * @param context calling context
-     * @param title title to be displayed in Downloads
+     *
+     * @param context     calling context
+     * @param title       title to be displayed in Downloads
      * @param description description of the downloaded file to be displayed in Downloads
      * @return RequestBuilder
      */
@@ -303,7 +317,6 @@ public class RequestBuilder
 
         return this;
     }
-
 
 
     /**
@@ -334,7 +347,7 @@ public class RequestBuilder
     public void connect(Velocity.ResponseListener callback)
     {
         this.callback = callback;
-        this.url += getPathParams();
+        this.url += getQueryParams();
 
         ThreadPool.getThreadPool().postRequestDelayed(resolveRequest(), Velocity.Settings.GLOBAL_NETWORK_DELAY);
     }
@@ -350,7 +363,7 @@ public class RequestBuilder
     {
         this.requestId = requestId;
         this.callback = callback;
-        this.url += getPathParams();
+        this.url += getQueryParams();
 
         ThreadPool.getThreadPool().postRequestDelayed(resolveRequest(), Velocity.Settings.GLOBAL_NETWORK_DELAY);
     }
@@ -358,6 +371,7 @@ public class RequestBuilder
 
     /**
      * Add the calling RequestBuilder to the request queue
+     *
      * @param requestId identifier of the request
      */
     public void queue(int requestId)
@@ -370,31 +384,26 @@ public class RequestBuilder
     @WorkerThread
     public Velocity.Response connectBlocking()
     {
-        if(Looper.myLooper() == Looper.getMainLooper())
+        if (Looper.myLooper() == Looper.getMainLooper())
             throw new NetworkOnMainThreadException();
 
         return new SynchronousWrapper().connect(this);
     }
 
 
-
-
-
-    private String getPathParams()
+    private String getQueryParams()
     {
         String path = "";
 
-        if(!pathParams.isEmpty())
+        if (!queryParams.isEmpty())
         {
-            for(String key : pathParams.keySet())
+            for (Pair<String, String> p : queryParams)
             {
-                String value = pathParams.get(key);
-
-                path += "&" + key + "=" + value;
+                path += "&" + p.first + "=" + p.second;
             }
         }
 
-        if(path.startsWith("&"))
+        if (path.startsWith("&"))
             path = "?" + path.substring(1);
 
         return path;

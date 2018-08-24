@@ -91,8 +91,8 @@ public class ExampleInstrumentedTest
 
         Velocity.initialize(3);
         Velocity.get(url)
-                .withPathParam("path1", "value1")
-                .withPathParam("path2", "value2")
+                .withQueryParam("path1", "value1")
+                .withQueryParam("path2", "value2")
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
@@ -555,106 +555,106 @@ public class ExampleInstrumentedTest
         assertNotNull(serverResponse.image);
     }
 
-    @Test
-    public void upload() throws Exception
-    {
-        final CountDownLatch latch = new CountDownLatch(1);
-        String url ="https://www.posttestserver.com/post.php";
-
-        String test = "hello world";
-        InputStream stream = null;
-        try
-        {
-            stream = new ByteArrayInputStream(test.getBytes("UTF-8"));
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            e.printStackTrace();
-        }
-
-        Velocity.initialize(3);
-        Velocity.getSettings().setLoggingEnabled(true);
-        Velocity.upload(url)
-                .withPathParam("dir", "velocity")
-                .withPathParam("method", "post")
-                .withPathParam("enctype", "multipart/form-data")
-                .setUploadSource(stream)
-                .connect(new Velocity.ResponseListener()
-                {
-                    @Override
-                    public void onVelocitySuccess(Velocity.Response response)
-                    {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
-                    }
-                });
-
-        latch.await();
-
-        final CountDownLatch latch2 = new CountDownLatch(1);
-        NetLog.d("response: " + serverResponse.body);
-
-        int start = serverResponse.body.indexOf("http");
-        int finish = serverResponse.body.indexOf("No Post");
-        String sub = serverResponse.body.substring(start, finish);
-
-        NetLog.d("file info: " + sub);
-        Velocity.get(sub).connect(new Velocity.ResponseListener()
-        {
-            @Override
-            public void onVelocitySuccess(Velocity.Response response)
-            {
-                serverResponse = response;
-                latch2.countDown();
-            }
-
-            @Override
-            public void onVelocityFailed(Velocity.Response error)
-            {
-                NetLog.d("error");
-                latch2.countDown();
-            }
-        });
-
-        //Thread.sleep(1000);
-
-        latch2.await();
-
-        String uploaded = serverResponse.body.substring(serverResponse.body.indexOf("Uploaded File: http"));
-        uploaded = uploaded.substring(uploaded.indexOf("http"));
-
-        NetLog.d("Uploaded file: " + uploaded);
-
-        final CountDownLatch latch3 = new CountDownLatch(1);
-
-        Velocity.get(uploaded).connect(new Velocity.ResponseListener()
-        {
-            @Override
-            public void onVelocitySuccess(Velocity.Response response)
-            {
-                serverResponse = response;
-                latch3.countDown();
-            }
-
-            @Override
-            public void onVelocityFailed(Velocity.Response error)
-            {
-                NetLog.d("error");
-                latch3.countDown();
-            }
-        });
-        latch3.await();
-
-        NetLog.d("upload file content: " + serverResponse.body);
-        assertEquals(test, serverResponse.body);
-    }
+//    @Test
+//    public void upload() throws Exception
+//    {
+//        final CountDownLatch latch = new CountDownLatch(1);
+//        String url ="https://www.posttestserver.com/post.php";
+//
+//        String test = "hello world";
+//        InputStream stream = null;
+//        try
+//        {
+//            stream = new ByteArrayInputStream(test.getBytes("UTF-8"));
+//        }
+//        catch (UnsupportedEncodingException e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//        Velocity.initialize(3);
+//        Velocity.getSettings().setLoggingEnabled(true);
+//        Velocity.upload(url)
+//                .withQueryParam("dir", "velocity")
+//                .withPathParam("method", "post")
+//                .withPathParam("enctype", "multipart/form-data")
+//                .setUploadSource(stream)
+//                .connect(new Velocity.ResponseListener()
+//                {
+//                    @Override
+//                    public void onVelocitySuccess(Velocity.Response response)
+//                    {
+//                        serverResponse = response;
+//                        latch.countDown();
+//                    }
+//
+//                    @Override
+//                    public void onVelocityFailed(Velocity.Response error)
+//                    {
+//                        serverResponse = error;
+//                        latch.countDown();
+//                    }
+//                });
+//
+//        latch.await();
+//
+//        final CountDownLatch latch2 = new CountDownLatch(1);
+//        NetLog.d("response: " + serverResponse.body);
+//
+//        int start = serverResponse.body.indexOf("http");
+//        int finish = serverResponse.body.indexOf("No Post");
+//        String sub = serverResponse.body.substring(start, finish);
+//
+//        NetLog.d("file info: " + sub);
+//        Velocity.get(sub).connect(new Velocity.ResponseListener()
+//        {
+//            @Override
+//            public void onVelocitySuccess(Velocity.Response response)
+//            {
+//                serverResponse = response;
+//                latch2.countDown();
+//            }
+//
+//            @Override
+//            public void onVelocityFailed(Velocity.Response error)
+//            {
+//                NetLog.d("error");
+//                latch2.countDown();
+//            }
+//        });
+//
+//        //Thread.sleep(1000);
+//
+//        latch2.await();
+//
+//        String uploaded = serverResponse.body.substring(serverResponse.body.indexOf("Uploaded File: http"));
+//        uploaded = uploaded.substring(uploaded.indexOf("http"));
+//
+//        NetLog.d("Uploaded file: " + uploaded);
+//
+//        final CountDownLatch latch3 = new CountDownLatch(1);
+//
+//        Velocity.get(uploaded).connect(new Velocity.ResponseListener()
+//        {
+//            @Override
+//            public void onVelocitySuccess(Velocity.Response response)
+//            {
+//                serverResponse = response;
+//                latch3.countDown();
+//            }
+//
+//            @Override
+//            public void onVelocityFailed(Velocity.Response error)
+//            {
+//                NetLog.d("error");
+//                latch3.countDown();
+//            }
+//        });
+//        latch3.await();
+//
+//        NetLog.d("upload file content: " + serverResponse.body);
+//        assertEquals(test, serverResponse.body);
+//    }
 
 
 }
