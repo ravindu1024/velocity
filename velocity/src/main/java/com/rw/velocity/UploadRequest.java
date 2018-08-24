@@ -2,6 +2,7 @@ package com.rw.velocity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -99,15 +100,13 @@ class UploadRequest extends Request
 
 
         //write other form data
-        for(String param : mBuilder.params.keySet())
+        for(Pair<String, String> p : mBuilder.params)
         {
-            String val = mBuilder.params.get(param);
-
             dos.writeBytes(Velocity.Settings.TWOHYPHENS + Velocity.Settings.BOUNDARY + Velocity.Settings.LINEEND);
-            dos.writeBytes("Content-Disposition: form-data; name=\"" + param + "\"" + Velocity.Settings.LINEEND);
+            dos.writeBytes("Content-Disposition: form-data; name=\"" + p.first + "\"" + Velocity.Settings.LINEEND);
             dos.writeBytes("Content-Type: text/plain" + Velocity.Settings.LINEEND);
             dos.writeBytes(Velocity.Settings.LINEEND);
-            dos.writeBytes(val);
+            dos.writeBytes(p.second);
             dos.writeBytes(Velocity.Settings.LINEEND);
         }
 
