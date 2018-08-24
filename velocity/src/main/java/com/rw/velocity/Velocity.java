@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -253,7 +252,7 @@ public class Velocity
             str.append("----").append(builder.requestMethod).append(" : ").append(requestUrl).append("\n");
             str.append("----").append("Headers : ").append(builder.headers.size()).append("\n");
             str.append("----").append("Form Data : ").append(builder.params.size()).append("\n");
-            str.append("----").append("Path params : ").append(builder.pathParams.size()).append("\n");
+            str.append("----").append("Path params : ").append(builder.queryParams.size()).append("\n");
 
 
             str.append("--------- Response-------------").append("\n");
