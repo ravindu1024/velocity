@@ -1,8 +1,8 @@
 package com.rw.velocity;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -121,18 +121,6 @@ public class Velocity
     }
 
 
-    /**
-     * WARNING : This feature is experimental. Currently only supports the resource owner password flow.
-     *
-     * @param publicUrl token url
-     * @return OAuthBuilder
-     */
-    public static OAuthBuilder loginWithOAuth(String publicUrl)
-    {
-        return new OAuthBuilder(publicUrl);
-    }
-
-
     public enum DownloadType
     {
         Automatic, Base64toPdf, Base64toJpg
@@ -173,6 +161,7 @@ public class Velocity
 
     public static class Response
     {
+        public boolean isSuccess = true;
         @NonNull
         public final String body;
         public final Map<String, List<String>> responseHeaders;
@@ -196,7 +185,8 @@ public class Velocity
         public @Nullable
         final String requestMethod;
 
-        Response(int requestId,
+        Response(boolean isSuccess,
+                 int requestId,
                  @NonNull String body,
                  int status,
                  @Nullable Map<String, List<String>> responseHeaders,
@@ -204,6 +194,7 @@ public class Velocity
                  @Nullable Object userData,
                  @NonNull RequestBuilder builder)
         {
+            this.isSuccess = isSuccess;
             this.requestId = requestId;
             this.body = body;
             this.responseCode = status;
@@ -272,16 +263,12 @@ public class Velocity
 
     public interface ResponseListener
     {
-        void onVelocitySuccess(Response response);
-
-        void onVelocityFailed(Response error);
+        void onVelocityResponse(Response response);
     }
 
     public interface MultiResponseListener
     {
-        void onVelocityMultiResponseSuccess(HashMap<Integer, Response> responseMap);
-
-        void onVelocityMultiResponseError(HashMap<Integer, Response> errorMap);
+        void onVelocityMultiResponse(HashMap<Integer, Response> responseMap);
     }
 
     public interface ProgressListener

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.WorkerThread;
 import android.util.Pair;
 
 import com.google.gson.Gson;
@@ -367,7 +367,6 @@ public class RequestBuilder
 
         ThreadPool.getThreadPool().postRequestDelayed(resolveRequest(), Velocity.Settings.GLOBAL_NETWORK_DELAY);
     }
-
 
     /**
      * Add the calling RequestBuilder to the request queue

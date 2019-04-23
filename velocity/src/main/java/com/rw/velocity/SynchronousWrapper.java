@@ -11,7 +11,7 @@ public class SynchronousWrapper implements Velocity.ResponseListener
     private CountDownLatch latch = new CountDownLatch(1);
     private Velocity.Response response = null;
 
-    public Velocity.Response connect(RequestBuilder builder)
+    Velocity.Response connect(RequestBuilder builder)
     {
         builder.connect(this);
         try
@@ -27,16 +27,9 @@ public class SynchronousWrapper implements Velocity.ResponseListener
     }
 
     @Override
-    public void onVelocitySuccess(Velocity.Response response)
+    public void onVelocityResponse(Velocity.Response response)
     {
         this.response = response;
-        latch.countDown();
-    }
-
-    @Override
-    public void onVelocityFailed(Velocity.Response error)
-    {
-        this.response = error;
         latch.countDown();
     }
 }

@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -157,7 +158,7 @@ class Request
             else
             {
                 OutputStream os = mConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
                 writer.write(mBuilder.rawParams);
                 writer.flush();
                 writer.close();
@@ -314,7 +315,9 @@ class Request
 
     private void returnMockResponse()
     {
-        final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
+        final Velocity.Response reply = new Velocity.Response(
+                true,
+                mBuilder.requestId,
                 mBuilder.mockResponse,
                 200,
                 null,
@@ -329,7 +332,7 @@ class Request
             {
                 if (mBuilder.callback != null)
                 {
-                    mBuilder.callback.onVelocitySuccess(reply);
+                    mBuilder.callback.onVelocityResponse(reply);
                 }
                 else
                     NetLog.d("Warning: No Data callback supplied");
@@ -341,7 +344,9 @@ class Request
 
     private void returnResponse(final boolean success)
     {
-        final Velocity.Response reply = new Velocity.Response(mBuilder.requestId,
+        final Velocity.Response reply = new Velocity.Response(
+                success,
+                mBuilder.requestId,
                 mResponse.toString(),
                 mResponseCode,
                 (mConnection == null) ? null : mConnection.getHeaderFields(),
@@ -356,13 +361,10 @@ class Request
             {
                 if (mBuilder.callback != null)
                 {
-                    if (success)
-                        mBuilder.callback.onVelocitySuccess(reply);
-                    else
-                    {
+                    if(!success)
                         NetLog.conError(reply, null);
-                        mBuilder.callback.onVelocityFailed(reply);
-                    }
+
+                    mBuilder.callback.onVelocityResponse(reply);
                 }
                 else
                     NetLog.d("Warning: No Data callback supplied");

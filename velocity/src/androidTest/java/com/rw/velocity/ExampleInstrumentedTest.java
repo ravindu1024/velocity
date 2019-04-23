@@ -1,20 +1,20 @@
 package com.rw.velocity;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -24,23 +24,24 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest
 {
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private class HttpBinReply
     {
         Map<String, String> args;
         Map<String, String> headers;
         Map<String, String> form;
         Map<String, String> json;
-        String url;
-        String data;
+        String              url;
+        String              data;
     }
 
     private Velocity.Response serverResponse;
 
     @Test
-    public void useAppContext() throws Exception
+    public void useAppContext()
     {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+        Context appContext = InstrumentationRegistry.getInstrumentation().getContext();
 
         assertEquals("com.rw.velocity.test", appContext.getPackageName());
     }
@@ -49,7 +50,7 @@ public class ExampleInstrumentedTest
     public void get() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/get";
+        String url = "https://httpbin.org/get";
 
         Velocity.initialize(3);
         Velocity.getSettings().setResponseCompressionEnabled(true);
@@ -59,17 +60,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -87,26 +89,27 @@ public class ExampleInstrumentedTest
     public void getPathParams() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/get";
+        String url = "https://httpbin.org/get";
 
         Velocity.initialize(3);
         Velocity.get(url)
-                .withPathParam("path1", "value1")
-                .withPathParam("path2", "value2")
+                .withQueryParam("path1", "value1")
+                .withQueryParam("path2", "value2")
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -122,7 +125,7 @@ public class ExampleInstrumentedTest
     public void postFormData() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         Velocity.initialize(3);
         Velocity.post(url)
@@ -131,17 +134,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -158,7 +162,7 @@ public class ExampleInstrumentedTest
     public void postFormDataJson() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         Map<String, String> map = new HashMap<>();
         map.put("key1", "value1");
@@ -170,17 +174,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -197,7 +202,7 @@ public class ExampleInstrumentedTest
     public void postFormDataRaw() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         String postData = "raw_data_string";
 
@@ -207,17 +212,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -226,14 +232,14 @@ public class ExampleInstrumentedTest
         HttpBinReply reply = serverResponse.deserialize(HttpBinReply.class);
 
         assertEquals(reply.url, url);
-        assertEquals(reply.form.containsKey(postData), true);
+        assertTrue(reply.form.containsKey(postData));
     }
 
     @Test
     public void postFormDataRawJson() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         String postData = "{\"key1\":\"value1\"}";
 
@@ -243,17 +249,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -269,7 +276,7 @@ public class ExampleInstrumentedTest
     public void postFormDataRawTextPlain() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         String postData = "plain_text";
 
@@ -279,17 +286,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -305,7 +313,7 @@ public class ExampleInstrumentedTest
     public void postFormDataRawTextPlainAndForm() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         String postData = "plain_text";
 
@@ -316,17 +324,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -344,7 +353,7 @@ public class ExampleInstrumentedTest
     public void putFormData() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/put";
+        String url = "https://httpbin.org/put";
 
         Velocity.initialize(3);
         Velocity.put(url)
@@ -353,17 +362,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -380,7 +390,7 @@ public class ExampleInstrumentedTest
     public void deleteFormData() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/delete";
+        String url = "https://httpbin.org/delete";
 
         Velocity.initialize(3);
         Velocity.delete(url)
@@ -389,17 +399,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -416,7 +427,7 @@ public class ExampleInstrumentedTest
     public void postMultiPart() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/post";
+        String url = "https://httpbin.org/post";
 
         Velocity.initialize(3);
         Velocity.getSettings().setResponseCompressionEnabled(true);
@@ -427,17 +438,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -454,7 +466,7 @@ public class ExampleInstrumentedTest
     public void absoluteRedirect() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/absolute-redirect/2";
+        String url = "https://httpbin.org/absolute-redirect/2";
 
         Velocity.initialize(3);
         Velocity.getSettings().setAutoRedirects(false);
@@ -465,17 +477,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -491,7 +504,7 @@ public class ExampleInstrumentedTest
     public void relativeRedirect() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/relative-redirect/2";
+        String url = "https://httpbin.org/relative-redirect/2";
 
         Velocity.initialize(3);
         Velocity.getSettings().setAutoRedirects(false);
@@ -502,17 +515,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -528,7 +542,7 @@ public class ExampleInstrumentedTest
     public void imagePng() throws Exception
     {
         final CountDownLatch latch = new CountDownLatch(1);
-        String url ="http://httpbin.org/image/png";
+        String url = "https://httpbin.org/image/png";
 
         Velocity.initialize(3);
         Velocity.getSettings().setResponseCompressionEnabled(true);
@@ -536,17 +550,18 @@ public class ExampleInstrumentedTest
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
+                    public void onVelocityResponse(Velocity.Response response)
                     {
-                        serverResponse = response;
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                        serverResponse = error;
-                        latch.countDown();
+                        if (response.isSuccess)
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
+                        else
+                        {
+                            serverResponse = response;
+                            latch.countDown();
+                        }
                     }
                 });
 
@@ -582,7 +597,7 @@ public class ExampleInstrumentedTest
 //                .connect(new Velocity.ResponseListener()
 //                {
 //                    @Override
-//                    public void onVelocitySuccess(Velocity.Response response)
+//                    public void onVelocityResponse(Velocity.Response response)
 //                    {
 //                        serverResponse = response;
 //                        latch.countDown();
@@ -591,7 +606,7 @@ public class ExampleInstrumentedTest
 //                    @Override
 //                    public void onVelocityFailed(Velocity.Response error)
 //                    {
-//                        serverResponse = error;
+//                        serverResponse = response;
 //                        latch.countDown();
 //                    }
 //                });
@@ -609,7 +624,7 @@ public class ExampleInstrumentedTest
 //        Velocity.get(sub).connect(new Velocity.ResponseListener()
 //        {
 //            @Override
-//            public void onVelocitySuccess(Velocity.Response response)
+//            public void onVelocityResponse(Velocity.Response response)
 //            {
 //                serverResponse = response;
 //                latch2.countDown();
@@ -637,7 +652,7 @@ public class ExampleInstrumentedTest
 //        Velocity.get(uploaded).connect(new Velocity.ResponseListener()
 //        {
 //            @Override
-//            public void onVelocitySuccess(Velocity.Response response)
+//            public void onVelocityResponse(Velocity.Response response)
 //            {
 //                serverResponse = response;
 //                latch3.countDown();

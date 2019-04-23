@@ -19,7 +19,6 @@ class MultiResponseHandler implements Velocity.ResponseListener
 {
     private Velocity.MultiResponseListener mCallback;
     private int mTotalRequestCount = 0;
-    private boolean mIsFailed = false;
     private final static Boolean mLock = true;
 
     @SuppressLint("UseSparseArrays")
@@ -63,24 +62,13 @@ class MultiResponseHandler implements Velocity.ResponseListener
 
         if(mResponses.size() == mTotalRequestCount)
         {
-            if (!mIsFailed)
-                mCallback.onVelocityMultiResponseSuccess(mResponses);
-            else
-                mCallback.onVelocityMultiResponseError(mResponses);
+            mCallback.onVelocityMultiResponse(mResponses);
         }
     }
 
     @Override
-    public void onVelocitySuccess(Velocity.Response response)
+    public void onVelocityResponse(Velocity.Response response)
     {
         checkAndsendResponse(response);
-    }
-
-    @Override
-    public void onVelocityFailed(Velocity.Response error)
-    {
-        mIsFailed = true;
-
-        checkAndsendResponse(error);
     }
 }
