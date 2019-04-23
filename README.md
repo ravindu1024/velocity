@@ -28,28 +28,28 @@ allprojects {
 ``` 
 Add the following to your app.gradle file
 ```gradle
-    compile 'com.github.ravindu1024:velocity:1.0.4'
+    implementation 'com.github.ravindu1024:velocity:<latest-version>'
 ```
 
 # Usage
 
 Velocity uses a background threadpool to execute network requests and it needs to initialized at app launch:
 ```java
-    Velocity.initialize(3);     //initialize the threadpool with 3 background threads. All threads will be waiting on a queue.
+    Velocity.initialize(3);     //initialize the threadpool with background threads (eg: 3 or 6 or whatever you feel like). All threads will be waiting on a queue.
 ```
 
 Simple GET request:
 ```java
-Velocity.get("http://www.google.com").connect(new Velocity.ResponseListener()
+Velocity.get("http://www.google.com")
+		.connect(new Velocity.ResponseListener()
         {
             @Override
-            public void onVelocitySuccess(Velocity.Response response)
+            public void onVelocityResponse(Velocity.Response response)
             {
-            }
-
-            @Override
-            public void onVelocityFailed(Velocity.Response error)
-            {
+            	if(response.isSuccess)
+            	{
+            		//...
+            	}
             }
         });
 ```
@@ -64,14 +64,13 @@ Velocity.get(url)
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
-                    {
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                    }
+		            public void onVelocityResponse(Velocity.Response response)
+		            {
+		            	if(response.isSuccess)
+		            	{
+		            		//...
+		            	}
+		            }
                 });
 ```
 
@@ -83,14 +82,13 @@ Velocity.post(url)
                 .connect(new Velocity.ResponseListener()
                 {
                     @Override
-                    public void onVelocitySuccess(Velocity.Response response)
-                    {
-                    }
-
-                    @Override
-                    public void onVelocityFailed(Velocity.Response error)
-                    {
-                    }
+		            public void onVelocityResponse(Velocity.Response response)
+		            {
+		            	if(response.isSuccess)
+		            	{
+		            		//...
+		            	}
+		            }
                 });
 ```
 
@@ -104,13 +102,13 @@ When multiple requests are queued and executed all replies are provided in a sin
         Velocity.executeQueue(new Velocity.MultiResponseListener()
         {
             @Override
-            public void onVelocityMultiResponseSuccess(HashMap<Integer, Velocity.Response> responseMap)
+            public void onVelocityMultiResponse(HashMap<Integer, Velocity.Response> responseMap)
             {
-            }
-
-            @Override
-            public void onVelocityMultiResponseError(HashMap<Integer, Velocity.Response> errorMap)
-            {
+            	if(responseMap.get(0).isSucess)
+            	{
+            		//.....
+            	}
+            	//.....
             }
         });
 ```
